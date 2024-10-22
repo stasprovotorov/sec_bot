@@ -10,8 +10,7 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def main(message):
-    print(message.from_user)
-    bot.send_message(message.chat.id, '❤️ Анечка ❤️')
+    bot.send_message(message.chat.id, 'Hello!')
 
 
 bot.polling(none_stop=True)
