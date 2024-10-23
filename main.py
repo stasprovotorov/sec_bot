@@ -10,6 +10,7 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def main(message):
+    print(message.from_user.language_code)
     bot.send_message(message.chat.id, 'Hello!')
 
 
