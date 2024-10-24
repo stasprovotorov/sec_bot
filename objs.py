@@ -24,7 +24,6 @@ class Users:
             return self.users[id]
         raise KeyError(f'The user with this ID={id} is not found')
 
-    
     def __setitem__(self, id, user_obj):
         if isinstance(user_obj, User):
             self.users[id] = user_obj
