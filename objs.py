@@ -1,10 +1,6 @@
-from datetime import datetime
-
-
 class User:
     def __init__(self, language):
         self.language = language
-        self.start_time = datetime.now()
 
     @property
     def language(self):
@@ -22,7 +18,7 @@ class Users:
     def __getitem__(self, id):
         if id in self.users:
             return self.users[id]
-        raise KeyError(f'The user with this ID={id} is not found')
+        raise KeyError(f'The user with this ID is not found')
 
     def __setitem__(self, id, user_obj):
         if isinstance(user_obj, User):
