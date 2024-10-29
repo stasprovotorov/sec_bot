@@ -31,3 +31,7 @@ class Users:
                 db[id] = user_obj
         else:
             raise TypeError('Value must be an instance of User class')
+
+    def __contains__(self, id):
+        with shelve.open(self._filename) as db:
+            return id in db
