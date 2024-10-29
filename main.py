@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
-from os import getenv
+from dotenv import dotenv_values
 import telebot
 
-load_dotenv('tg_bot_token.env')
-TOKEN = getenv('TOKEN')
+config = dotenv_values('tg_bot_token.env')
+TOKEN = config['TOKEN']
+
 bot_lang = 'en'
 
 bot = telebot.TeleBot(TOKEN)
