@@ -18,6 +18,14 @@ class Users:
     def __init__(self):
         self._filename = 'users'
 
+    def get_users(self):
+        with shelve.open(self._filename) as db:
+            return dict(db)
+        
+    def clear_users(self):
+        with shelve.open(self._filename) as db:
+            return db.clear()
+
     def __getitem__(self, id):
         with shelve.open(self._filename) as db:
             if id in db:
