@@ -24,7 +24,7 @@ class Users:
         
     def clear_users(self):
         with shelve.open(self._filename) as db:
-            return db.clear()
+            db.clear()
 
     def __getitem__(self, id):
         with shelve.open(self._filename) as db:
