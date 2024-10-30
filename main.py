@@ -12,8 +12,8 @@ users = Users()
 @bot.message_handler(commands=['start'])
 def start(message):
     id = str(message.from_user.id)
-    language = message.from_user.language_code
     if id not in users:
+        language = 'ru' if message.from_user.language_code == 'ru' else 'en'
         users[id] = User(language)
     else:
         language = users[id].language
