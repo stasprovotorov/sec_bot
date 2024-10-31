@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 import telebot
 from objs import Users, User
+import messages as msg
 
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
@@ -17,11 +18,7 @@ def start(message):
         users[id] = User(language)
     else:
         language = users[id].language
-    message_back = {
-        'en': 'Welcome! Your language is set to English',
-        'ru': 'Добро пожаловать! Для вас установлен русский язык'
-        }
-    bot.send_message(message.chat.id, message_back[language])
+    bot.send_message(message.chat.id, msg.start[language])
 
 
 bot.polling(none_stop=True)
