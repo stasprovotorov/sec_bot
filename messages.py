@@ -4,6 +4,11 @@ start = {
 }
 
 change_lang_btn = {
-    'ru': 'Сменить язык',
-    'en': 'Change language'
+    'ru': 'Change language to English',
+    'en': 'Сменить язык на русский'
+}
+
+changed_lang = {
+    'ru': 'Для вас установлен русский язык',
+    'en': 'Your language is set to English'
 }

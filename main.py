@@ -24,4 +24,12 @@ def start(message):
     bot.send_message(message.chat.id, msg.start[lang], reply_markup=keyboard)
 
 
+@bot.callback_query_handler(func=lambda call: call.data == 'change_language')
+def change_language(call):
+    id = str(call.from_user.id)
+    lang = 'ru' if users[id].language == 'en' else 'en'
+    users[id] = User(lang)
+    bot.send_message(call.message.chat.id, msg.changed_lang[users[id].language])
+
+
 bot.polling(none_stop=True)
