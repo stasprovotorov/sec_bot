@@ -29,7 +29,36 @@ def change_language(call):
     id = str(call.from_user.id)
     lang = 'ru' if users[id].language == 'en' else 'en'
     users[id] = User(lang)
-    bot.send_message(call.message.chat.id, msg.changed_lang[users[id].language])
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('Button 1', callback_data='button_1'))
+    keyboard.add(types.InlineKeyboardButton('Button 2', callback_data='button_2'))
+    keyboard.add(types.InlineKeyboardButton('Button 3', callback_data='button_3'))
+    keyboard.add(types.InlineKeyboardButton('Button 4', callback_data='button_4'))
+    bot.send_message(
+        call.message.chat.id, 
+        msg.changed_lang[users[id].language],
+        reply_markup=keyboard
+    )
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'button_1')
+def button_1(call):
+    bot.send_message(call.message.chat.id, 'Command 1 executed')
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'button_2')
+def button_1(call):
+    bot.send_message(call.message.chat.id, 'Command 2 executed')
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'button_3')
+def button_1(call):
+    bot.send_message(call.message.chat.id, 'Command 3 executed')
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'button_4')
+def button_1(call):
+    bot.send_message(call.message.chat.id, 'Command 4 executed')
 
 
 bot.polling(none_stop=True)
