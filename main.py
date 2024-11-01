@@ -21,6 +21,12 @@ def start(message):
     keyboard = types.InlineKeyboardMarkup()
     change_lang_btn = types.InlineKeyboardButton(msg.change_lang_btn[lang], callback_data='change_language')
     keyboard.add(change_lang_btn)
+    btn1 = types.InlineKeyboardButton('Button 1', callback_data='button_1')
+    btn2 = types.InlineKeyboardButton('Button 2', callback_data='button_2')
+    keyboard.row(btn1, btn2)
+    btn3 = types.InlineKeyboardButton('Button 3', callback_data='button_3')
+    btn4 = types.InlineKeyboardButton('Button 4', callback_data='button_4')
+    keyboard.row(btn3, btn4)
     bot.send_message(message.chat.id, msg.start[lang], reply_markup=keyboard)
 
 
@@ -29,16 +35,7 @@ def change_language(call):
     id = str(call.from_user.id)
     lang = 'ru' if users[id].language == 'en' else 'en'
     users[id] = User(lang)
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton('Button 1', callback_data='button_1'))
-    keyboard.add(types.InlineKeyboardButton('Button 2', callback_data='button_2'))
-    keyboard.add(types.InlineKeyboardButton('Button 3', callback_data='button_3'))
-    keyboard.add(types.InlineKeyboardButton('Button 4', callback_data='button_4'))
-    bot.send_message(
-        call.message.chat.id, 
-        msg.changed_lang[users[id].language],
-        reply_markup=keyboard
-    )
+    bot.send_message(call.message.chat.id, msg.changed_lang[users[id].language])
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'button_1')
