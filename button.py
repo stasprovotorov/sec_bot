@@ -12,6 +12,7 @@ class Button:
     @classmethod
     def _set_id(cls):
         with shelve.open(cls._filename) as db:
-            count = db.setdefault('count', 0) + 1
+            count = db.get('count', 0) + 1
             db['count'] = count
-            return f'{count:02d}'
+            btn_id = f'BTN{count:02d}'
+        return btn_id
