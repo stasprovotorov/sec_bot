@@ -4,9 +4,10 @@ import shelve
 class Button:
     _filename = 'buttons_data'
 
-    def __init__(self, label=None, func=None):
+    def __init__(self, label_ru, label_en, func):
         self.id = self._set_id()
-        self.label = label
+        self.label_ru = label_ru
+        self.label_en = label_en
         self.func = func
 
     @classmethod
