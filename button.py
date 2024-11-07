@@ -2,18 +2,16 @@ import shelve
 
 
 class Button:
-    _filename = 'buttons_data'
-
     def __init__(self, label_ru, label_en, func):
-        self.id = self._set_id()
-        self.label_ru = label_ru
-        self.label_en = label_en
+        self.id = self.set_id()
+        self.label = {'ru': label_ru, 'en': label_en}
         self.func = func
 
+    _filename = 'buttons_data'
+
     @classmethod
-    def _set_id(cls):
+    def set_id(cls):
         with shelve.open(cls._filename) as db:
-            count = db.get('count', 0) + 1
-            db['count'] = count
-            btn_id = f'BTN{count:02d}'
-        return btn_id
+            counter = db.get('counter', 0) + 1
+            db['counter'] = counter
+        return f'BTN{counter:02d}'
