@@ -7,11 +7,20 @@ class Storage(ABC):
 
     def __init__(self):
         if not hasattr(self, '_FILENAME') or not self._FILENAME:
-            raise ValueError('Filename is not set in subclass')
+            raise AttributeError(f'Filename is not set in subclass {self.__class__.__name__}')
         
-    def get(self, key):
-        with shelve.open(self._FILENAME) as db:
-            return self._get(db, key)
+        if not hasattr(self, '_default_structure') or not self._default_structure:
+            raise AttributeError(f'Default file structure is not set in subclass {self.__class__.__name__}')
+        
+        self._init_file()
+
+    def _init_file(self):
+        with shelve.open(self._FILENAME, writeback=True) as db:
+            for key, data_type in self._default_structure.items():
+                db.setdefault(key, data_type())
+        
+    def get(self):
+        pass
 
     def save(self):
         pass
@@ -41,9 +50,13 @@ class Storage(ABC):
 
 class StorageUser(Storage):
     _FILENAME = 'data_users'
+    _default_structure = {
+        'users': dict, 
+        'admins': list
+    }
 
-    def _get(self, db, key):
-        return key
+    def _get(self):
+        raise NotImplementedError
 
     def _save(self):
         raise NotImplementedError
@@ -54,15 +67,12 @@ class StorageUser(Storage):
     def _delete(self):
         raise NotImplementedError
     
-    def get_admins(self):
-        pass
-
-    def add_admin(self):
-        pass
-
 
 class StorageButton(Storage):
     _FILENAME = 'data_buttons'
+    _default_structure = {
+        'buttons': dict
+    }
 
     def _get(self, key):
         raise NotImplementedError
@@ -79,6 +89,10 @@ class StorageButton(Storage):
 
 class StorageContent(Storage):
     _FILENAME = 'data_content'
+    _default_structure = {
+        'text': dict,
+        'images': dict
+    }
 
     def _get(self, key):
         raise NotImplementedError
@@ -91,9 +105,3 @@ class StorageContent(Storage):
 
     def _delete(self):
         raise NotImplementedError
-
-
-if __name__ == '__main__':
-    stg_user = StorageUser()
-
-    stg_user.get(171025409)
