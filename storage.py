@@ -19,8 +19,9 @@ class Storage(ABC):
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
         
-    def get(self):
-        pass
+    def get(self, key):
+        with shelve.open(self._FILENAME) as db:
+            return self._get(db, key)
 
     def save(self):
         pass
@@ -48,15 +49,15 @@ class Storage(ABC):
         pass
 
 
-class StorageUser(Storage):
+class StorageUsers(Storage):
     _FILENAME = 'data_users'
     _default_structure = {
         'users': dict, 
         'admins': list
     }
 
-    def _get(self):
-        raise NotImplementedError
+    def _get(self, db, key):
+        return db[key]
 
     def _save(self):
         raise NotImplementedError
@@ -68,7 +69,7 @@ class StorageUser(Storage):
         raise NotImplementedError
     
 
-class StorageButton(Storage):
+class StorageButtons(Storage):
     _FILENAME = 'data_buttons'
     _default_structure = {
         'buttons': dict
@@ -105,3 +106,9 @@ class StorageContent(Storage):
 
     def _delete(self):
         raise NotImplementedError
+
+
+if __name__ == '__main__':
+    stg_users = StorageUsers()
+
+    print(stg_users.get('users'))
