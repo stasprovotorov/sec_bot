@@ -18,7 +18,7 @@ class Storage():
         with shelve.open(self._FILENAME, writeback=True) as db:
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
-        
+
 
 class StorageUsers(Storage):
     _FILENAME = 'data_users'
