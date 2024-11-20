@@ -1,16 +1,15 @@
 import shelve
 
-
 class Storage():
     _FILENAME: str
     _default_structure: dict
 
     def __init__(self):
-        if not hasattr(self, '_FILENAME') or not self._FILENAME:
-            raise AttributeError(f'Filename is not set in subclass {self.__class__.__name__}')
-        
-        if not hasattr(self, '_default_structure') or not self._default_structure:
-            raise AttributeError(f'Default file structure is not set in subclass {self.__class__.__name__}')
+        for var in Storage.__annotations__:
+            if not hasattr(self, var):
+                raise AttributeError(f'Variable {var} is not defined in subclass {self.__class__.__name__}')
+            if not getattr(self, var):
+                raise ValueError(f'Variable {var} cannot be empty or None')
         
         self._init_file()
 
@@ -18,7 +17,7 @@ class Storage():
         with shelve.open(self._FILENAME, writeback=True) as db:
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
-
+                
 
 class StorageUsers(Storage):
     _FILENAME = 'data_users'
@@ -41,3 +40,7 @@ class StorageContent(Storage):
         'text': dict,
         'images': dict
     }
+
+
+if __name__ == '__main__':
+    a = StorageUsers()
