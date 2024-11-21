@@ -1,4 +1,5 @@
 import shelve
+from functools import wraps
 
 class Storage():
     _FILENAME: str
@@ -17,28 +18,45 @@ class Storage():
         with shelve.open(self._FILENAME, writeback=True) as db:
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
-                
+
+    @staticmethod
+    def _file_access(writeback=False):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(self, *args, **kwargs):
+                try:
+                    with shelve.open(self._FILENAME, writeback=writeback) as db:
+                        return func(self, db, *args, **kwargs)
+                except FileNotFoundError as e:
+                    raise RuntimeError(f'The file {self._FILENAME} was not found') from e
+                except PermissionError as e:
+                    raise RuntimeError(f'You do not have permission to access the file {self._FILENAME}') from e
+                except OSError as e:
+                    raise RuntimeWarning(f'An OS error occurred: {e}') from e
+            return wrapper
+        return decorator
+
 
 class StorageUsers(Storage):
     _FILENAME = 'data_users'
     _default_structure = {'users': dict,  'admins': list}
+        
+    @Storage._file_access()
+    def get_user(self, db, user_id):
+        user_obj = db['users'].get(user_id)
+        if user_obj is None:
+            raise KeyError(f'User with this ID {user_id} not found')
+        return user_obj
 
-    def get_user(self, user_id):
-        with shelve.open(self._FILENAME) as db:
-            user_obj = db['users'].get(user_id)
-            if user_obj is None:
-                raise KeyError(f'User with this ID {user_id} not found')
-            return user_obj
+    @Storage._file_access(writeback=True)
+    def save_user(self, db, user_id, user_obj):
+        db['users'][user_id] = user_obj
 
-    def save_user(self, user_id, user_obj):
-        with shelve.open(self._FILENAME, writeback=True) as db:
-            db['users'][user_id] = user_obj
-
-    def del_user(self, user_id):
-        with shelve.open(self._FILENAME, writeback=True) as db:
-            user_obj = db['users'].pop(user_id, None)
-            if user_obj is None:
-                raise KeyError(f'User with this ID {user_id} not found')
+    @Storage._file_access(writeback=True)
+    def del_user(self, db, user_id):
+        user_obj = db['users'].pop(user_id, None)
+        if user_obj is None:
+            raise KeyError(f'User with this ID {user_id} not found')
 
 
 class StorageButtons(Storage):
