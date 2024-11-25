@@ -40,7 +40,7 @@ class Storage():
 class StorageUsers(Storage):
     _FILENAME = 'data_users'
     _default_structure = {'users': dict,  'admins': list}
-        
+
     @Storage._file_access()
     def get_user(self, db, user_id):
         user_obj = db['users'].get(user_id)
