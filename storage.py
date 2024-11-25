@@ -32,7 +32,7 @@ class Storage():
                 except PermissionError as e:
                     raise RuntimeError(f'You do not have permission to access the file {self._FILENAME}') from e
                 except OSError as e:
-                    raise RuntimeWarning(f'An OS error occurred: {e}') from e
+                    raise RuntimeError(f'An OS error occurred: {e}') from e
             return wrapper
         return decorator
 
