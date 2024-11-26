@@ -23,14 +23,14 @@ class Storage():
     def _file_access(writeback=False):
         def decorator(func):
             @wraps(func)
-            def wrapper(self, *args, **kwargs):
+            def wrapper(obj, *args, **kwargs):
                 try:
-                    with shelve.open(self._FILENAME, writeback=writeback) as db:
-                        return func(self, db, *args, **kwargs)
+                    with shelve.open(obj._FILENAME, writeback=writeback) as db:
+                        return func(obj, db, *args, **kwargs)
                 except FileNotFoundError as e:
-                    raise RuntimeError(f'The file {self._FILENAME} was not found') from e
+                    raise RuntimeError(f'The file {obj._FILENAME} was not found') from e
                 except PermissionError as e:
-                    raise RuntimeError(f'You do not have permission to access the file {self._FILENAME}') from e
+                    raise RuntimeError(f'You do not have permission to access the file {obj._FILENAME}') from e
                 except OSError as e:
                     raise RuntimeError(f'An OS error occurred: {e}') from e
             return wrapper
@@ -58,6 +58,11 @@ class StorageUsers(Storage):
         if user_obj is None:
             raise KeyError(f'User with this ID {user_id} not found')
 
+    @classmethod
+    @Storage._file_access()
+    def get_admins(cls, db):
+        print('!!!')
+
 
 class StorageButtons(Storage):
     _FILENAME = 'data_buttons'
@@ -67,3 +72,7 @@ class StorageButtons(Storage):
 class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {'text': dict, 'images': dict}
+
+
+if __name__ == '__main__':
+    StorageUsers.get_admins()
