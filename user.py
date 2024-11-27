@@ -1,10 +1,15 @@
 from storage import StorageUsers
 
 class User:
+    _ROLES = {}
+
     def __init__(self, id, lang):
         self._id = id
         self.lang = lang
         self._init_role()
+
+    def _init_role(self):
+        pass
 
     def switch_lang(self):
         self.lang = 'ru' if self.lang == 'en' else 'en'
@@ -40,3 +45,7 @@ class User:
     @role.setter
     def role(self, value):
         self._role = value
+
+
+# if __name__ == '__main__':
+#     user = User(1000, 'en')

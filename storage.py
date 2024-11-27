@@ -60,8 +60,8 @@ class StorageUsers(Storage):
 
     @classmethod
     @Storage._file_access()
-    def get_admins(cls, db):
-        print('!!!')
+    def is_admin(cls, db, id):
+        return id in db['admins']
 
 
 class StorageButtons(Storage):
@@ -72,7 +72,3 @@ class StorageButtons(Storage):
 class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {'text': dict, 'images': dict}
-
-
-if __name__ == '__main__':
-    StorageUsers.get_admins()
