@@ -1,15 +1,17 @@
+from roles import Roles
 from storage import StorageUsers
 
 class User:
-    _ROLES = {0: 'UserGod', 1: 'UserAdmin', 2: 'UserBasic'}
-
     def __init__(self, id, lang):
         self._id = id
         self.lang = lang
         self._init_role()
 
     def _init_role(self):
-        self._role = self._ROLES[1 if StorageUsers.is_admin(self._id) else 2 ]
+        if StorageUsers.is_admin(self._id):
+            self.role = Roles.ADMIN
+        else:
+            self.role = Roles.BASIC
 
     def switch_lang(self):
         self.lang = 'ru' if self.lang == 'en' else 'en'
@@ -44,10 +46,6 @@ class User:
     
     @role.setter
     def role(self, value):
+        if not isinstance(value, Roles):
+            raise ValueError('Role must be an instance of class Roles')
         self._role = value
-
-
-if __name__ == '__main__':
-    user = User(1000, 'en')
-
-    print(user.__dict__)
