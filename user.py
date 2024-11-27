@@ -1,7 +1,7 @@
 from storage import StorageUsers
 
 class User:
-    _ROLES = {0: 'UserGod', 1: 'UserAdmin', 3: 'UserBasic'}
+    _ROLES = {0: 'UserGod', 1: 'UserAdmin', 2: 'UserBasic'}
 
     def __init__(self, id, lang):
         self._id = id
@@ -9,7 +9,7 @@ class User:
         self._init_role()
 
     def _init_role(self):
-        pass
+        self._role = self._ROLES[1 if StorageUsers.is_admin(self._id) else 2 ]
 
     def switch_lang(self):
         self.lang = 'ru' if self.lang == 'en' else 'en'
@@ -47,5 +47,7 @@ class User:
         self._role = value
 
 
-# if __name__ == '__main__':
-#     user = User(1000, 'en')
+if __name__ == '__main__':
+    user = User(1000, 'en')
+
+    print(user.__dict__)
