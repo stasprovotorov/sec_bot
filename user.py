@@ -1,5 +1,11 @@
-from roles import Roles
 from storage import StorageUsers
+from enum import Enum
+
+class Roles(Enum):
+    GOD = 'UserGod'
+    ADMIN = 'UserAdmin'
+    BASIC = 'UserBasic'
+
 
 class User:
     def __init__(self, id, lang):
