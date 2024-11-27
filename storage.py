@@ -62,13 +62,3 @@ class StorageUsers(Storage):
     @Storage._file_access()
     def is_admin(cls, db, id):
         return id in db['admins']
-
-
-class StorageButtons(Storage):
-    _FILENAME = 'data_buttons'
-    _default_structure = {'buttons': dict}
-
-
-class StorageContent(Storage):
-    _FILENAME = 'data_content'
-    _default_structure = {'text': dict, 'images': dict}
