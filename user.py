@@ -1,7 +1,7 @@
 from storage import StorageUsers
 
 class User:
-    _ROLES = {}
+    _ROLES = {0: 'UserGod', 1: 'UserAdmin', 3: 'UserBasic'}
 
     def __init__(self, id, lang):
         self._id = id
