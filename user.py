@@ -1,5 +1,10 @@
-from storage import StorageUsers
 from enum import Enum
+from storage import StorageUsers
+
+class Language(Enum):
+    RU = 'LangRU'
+    EN = 'LangEN'
+
 
 class Roles(Enum):
     GOD = 'UserGod'
@@ -14,13 +19,10 @@ class User:
         self._init_role()
 
     def _init_role(self):
-        if StorageUsers.is_admin(self._id):
-            self.role = Roles.ADMIN
-        else:
-            self.role = Roles.BASIC
+        self.role = Roles.ADMIN if StorageUsers.is_admin(self._id) else self.role = Roles.BASIC
 
     def switch_lang(self):
-        self.lang = 'ru' if self.lang == 'en' else 'en'
+        self.lang = Language.RU if self.lang == Language.EN else Language.EN
 
     @property
     def id(self):
@@ -40,7 +42,10 @@ class User:
     
     @lang.setter
     def lang(self, value):
-        self._lang = value if value == 'ru' else 'en'
+        if value in ('ru', Language.RU):
+            self._lang = Language.RU
+        else:
+            self._lang = Language.EN
 
     @lang.deleter
     def lang(self):
