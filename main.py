@@ -1,18 +1,19 @@
 from dotenv import dotenv_values
-from telebot import TeleBot, types
-from objs import Users, User
-import messages as msg
+from storage import StorageUsers
+from user import User
+from telebot import TeleBot
 
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
 
 bot = TeleBot(TOKEN)
-users = Users()
+su = StorageUsers()
 
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    pass
+    user_obj = User(message.from_user.id, message.from_user.language_code)
+    su.save_user(user_obj.id, user_obj)
 
 
 bot.polling(none_stop=True)
