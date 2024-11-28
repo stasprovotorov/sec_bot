@@ -1,7 +1,10 @@
+import os
 import shelve
 from functools import wraps
 
 class Storage():
+    _FOLDER = 'data_storage'
+
     _FILENAME: str
     _default_structure: dict
 
@@ -11,11 +14,15 @@ class Storage():
                 raise AttributeError(f'Variable {var} is not defined in subclass {self.__class__.__name__}')
             if not getattr(self, var):
                 raise ValueError(f'Variable {var} cannot be empty or None')
+            
+        if not os.path.exists(self._FOLDER):
+            os.makedirs(self._FOLDER)
         
         self._init_file()
 
     def _init_file(self):
-        with shelve.open(self._FILENAME, writeback=True) as db:
+        file_path = os.path.join(self._FOLDER, self._FILENAME)
+        with shelve.open(file_path, writeback=True) as db:
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
 
