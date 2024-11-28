@@ -16,9 +16,6 @@ class User:
     def __init__(self, id, lang):
         self._id = id
         self.lang = lang
-        self._init_role()
-
-    def _init_role(self):
         self.role = Roles.ADMIN if StorageUsers.is_admin(self.id) else Roles.BASIC
 
     def switch_lang(self):
