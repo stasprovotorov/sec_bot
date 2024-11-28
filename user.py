@@ -19,7 +19,7 @@ class User:
         self._init_role()
 
     def _init_role(self):
-        self.role = Roles.ADMIN if StorageUsers.is_admin(self.id) else self.role = Roles.BASIC
+        self.role = Roles.ADMIN if StorageUsers.is_admin(self.id) else Roles.BASIC
 
     def switch_lang(self):
         self.lang = Language.RU if self.lang == Language.EN else Language.EN
@@ -42,10 +42,7 @@ class User:
     
     @lang.setter
     def lang(self, value):
-        if value in ('ru', Language.RU):
-            self._lang = Language.RU
-        else:
-            self._lang = Language.EN
+        self._lang = Language.RU if value in ('ru', Language.RU) else Language.EN
 
     @lang.deleter
     def lang(self):
@@ -60,3 +57,7 @@ class User:
         if not isinstance(value, Roles):
             raise ValueError('Role must be an instance of class Roles')
         self._role = value
+
+    @role.deleter
+    def role(self):
+        raise AttributeError('User role deletion is not allowed')
