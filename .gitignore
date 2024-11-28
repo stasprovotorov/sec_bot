@@ -1,4 +1,4 @@
 venv/
 tg_bot_token.env
 __pycache__/
-data_storage/data_users.db
+data_storage/
