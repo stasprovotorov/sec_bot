@@ -7,13 +7,14 @@ config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
 
 bot = TeleBot(TOKEN)
-su = StorageUsers()
+users_db = StorageUsers()
 
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    user_obj = User(message.from_user.id, message.from_user.language_code)
-    su.save_user(user_obj.id, user_obj)
+    user = User(users_db, message.chat.id, message.from_user.language_code)
+    users_db.save_user(user)
+    print(users_db.get_user(user.user_id))
 
 
 bot.polling(none_stop=True)

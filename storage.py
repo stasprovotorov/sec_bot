@@ -4,7 +4,6 @@ from functools import wraps
 
 class Storage():
     _FOLDER = 'data_storage'
-
     _FILENAME: str
     _default_structure: dict
 
@@ -18,11 +17,11 @@ class Storage():
         if not os.path.exists(self._FOLDER):
             os.makedirs(self._FOLDER)
         
+        self._file_path = os.path.join(self._FOLDER, self._FILENAME)
         self._init_file()
 
     def _init_file(self):
-        file_path = os.path.join(self._FOLDER, self._FILENAME)
-        with shelve.open(file_path, writeback=True) as db:
+        with shelve.open(self._file_path, writeback=True) as db:
             for key, data_type in self._default_structure.items():
                 db.setdefault(key, data_type())
 
@@ -32,12 +31,12 @@ class Storage():
             @wraps(func)
             def wrapper(obj, *args, **kwargs):
                 try:
-                    with shelve.open(obj._FILENAME, writeback=writeback) as db:
+                    with shelve.open(obj._file_path, writeback=writeback) as db:
                         return func(obj, db, *args, **kwargs)
                 except FileNotFoundError as e:
-                    raise RuntimeError(f'The file {obj._FILENAME} was not found') from e
+                    raise RuntimeError(f'The file {obj._file_path} was not found') from e
                 except PermissionError as e:
-                    raise RuntimeError(f'You do not have permission to access the file {obj._FILENAME}') from e
+                    raise RuntimeError(f'You do not have permission to access the file {obj._file_path}') from e
                 except OSError as e:
                     raise RuntimeError(f'An OS error occurred: {e}') from e
             return wrapper
@@ -50,14 +49,14 @@ class StorageUsers(Storage):
 
     @Storage._file_access()
     def get_user(self, db, user_id):
-        user_obj = db['users'].get(user_id)
-        if user_obj is None:
+        user_data = db['users'].get(user_id)
+        if user_data is None:
             raise KeyError(f'User with this ID {user_id} not found')
-        return user_obj
+        return user_data
 
     @Storage._file_access(writeback=True)
-    def save_user(self, db, user_id, user_obj):
-        db['users'][user_id] = user_obj
+    def save_user(self, db, user_obj):
+        db['users'][user_obj.user_id] = user_obj
 
     @Storage._file_access(writeback=True)
     def del_user(self, db, user_id):
@@ -65,7 +64,6 @@ class StorageUsers(Storage):
         if user_obj is None:
             raise KeyError(f'User with this ID {user_id} not found')
 
-    @classmethod
     @Storage._file_access()
-    def is_admin(cls, db, id):
-        return id in db['admins']
+    def is_admin(self, db, user_id):
+        return user_id in db['admins']
