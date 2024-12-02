@@ -1,5 +1,4 @@
 from enum import Enum
-from storage import StorageUsers
 
 class Language(Enum):
     RU = 'LangRU'

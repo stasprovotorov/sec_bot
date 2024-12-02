@@ -12,9 +12,9 @@ users_db = StorageUsers()
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    user = User(users_db, message.chat.id, message.from_user.language_code)
-    users_db.save_user(user)
-    print(users_db.get_user(user.user_id))
+    pass
+    # user = User(users_db, message.chat.id, message.from_user.language_code)
+    # users_db.save_user(user)
 
 
 bot.polling(none_stop=True)
