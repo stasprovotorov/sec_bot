@@ -1,7 +1,7 @@
 from dotenv import dotenv_values
 from storage import StorageUsers
 from user import User
-from telebot import TeleBot, types
+from telebot import TeleBot
 
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
