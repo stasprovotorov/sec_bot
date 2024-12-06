@@ -25,14 +25,15 @@ class Roles(Enum):
 
 class User:
     def __init__(self, users_db, user_id, lang):
+        self._users_db = users_db
         try:
-            user_obj = users_db.get_user(user_id)
+            user_obj = self._users_db.get_user(user_id)
             self.__dict__.update(user_obj.__dict__)
         except KeyError:
             self._user_id = user_id
             self.lang = lang
-            self.role = Roles.ADMIN if users_db.is_admin(self.user_id) else Roles.BASIC
-            users_db.save_user(self)
+            self.role = Roles.ADMIN if self._users_db.is_admin(self.user_id) else Roles.BASIC
+            self._users_db.save_user(self)
 
     def switch_lang(self):
         self.lang = Language.RU if self.lang == Language.EN else Language.EN
