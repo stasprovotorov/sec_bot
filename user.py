@@ -37,6 +37,7 @@ class User:
 
     def switch_lang(self):
         self.lang = Language.RU if self.lang == Language.EN else Language.EN
+        self._users_db.save_user(self)
 
     @property
     def user_id(self):
