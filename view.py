@@ -16,7 +16,7 @@ class Image:
             self.img = img.read()
 
 
-class Message:
+class View:
     def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
         self.bot = obj_bot
         self.user_id = obj_user.user_id
