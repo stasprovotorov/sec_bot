@@ -1,4 +1,5 @@
 from user import Language
+from io import BytesIO
 
 class Text:
     def __init__(self, content_ru, content_en):
@@ -12,14 +13,18 @@ class Text:
 class Image:
     def __init__(self, img_path):
         with open(img_path, 'rb') as img:
-            self.img = img
+            self.img = img.read()
 
 
 class Message:
-    def __init__(self, obj_bot, obj_user, obj_text):
+    def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
         self.bot = obj_bot
         self.user_id = obj_user.user_id
-        self.text = obj_text.content[obj_user.lang]
-
+        self.text = obj_text.content[obj_user.lang] if obj_text else obj_text
+        self.image = BytesIO(obj_image.img) if obj_image else obj_image
+        
     def send(self):
-        self.bot.send_message(self.user_id, self.text)
+        if self.text:
+            self.bot.send_message(self.user_id, self.text)
+        if self.image:
+            self.bot.send_photo(self.user_id, self.image)
