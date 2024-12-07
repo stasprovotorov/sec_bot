@@ -9,6 +9,12 @@ class Text:
         }
 
 
+class Image:
+    def __init__(self, img_path):
+        with open(img_path, 'rb') as img:
+            self.img = img
+
+
 class Message:
     def __init__(self, obj_bot, obj_user, obj_text):
         self.bot = obj_bot
