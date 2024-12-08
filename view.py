@@ -16,6 +16,16 @@ class Image:
             self.img = img.read()
 
 
+class Button:
+    def __init__(self, label_ru, label_en, view_name):
+        self.lang = Language
+        self.label = {
+            self.lang.RU: label_ru,
+            self.lang.EN: label_en
+        }
+        self.view_name = view_name
+    
+
 class View:
     def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
         self.bot = obj_bot
