@@ -23,8 +23,13 @@ class Button:
             self.lang.RU: label_ru,
             self.lang.EN: label_en
         }
+
+
+class Keyboard:
+    def __init__(self, view_name):
         self.view_name = view_name
-    
+        self.buttons = []
+
 
 class View:
     def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
