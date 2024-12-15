@@ -2,6 +2,8 @@ import os
 import shelve
 from functools import wraps
 
+from user import Language
+
 class Storage():
     _FOLDER = 'data_storage'
     _FILENAME: str
@@ -71,27 +73,31 @@ class StorageUsers(Storage):
 
 class StorageContent(Storage):
     _FILENAME = 'data_content'
-    _default_structure = {'text': {}, 'image': {}, 'keyboard': {}}
+    _default_structure = {'text': dict, 'image': dict, 'keyboard': dict, 'button': dict}
 
     @Storage._file_access()
-    def get_text(self, db, content_key):
+    def get_text(self, db, content_key, lang):
         text = db['text'].get(content_key)
         if text is None:
             raise KeyError(f'Text with content key {content_key} not found')
-        return text
+        return text[lang]
 
     @Storage._file_access(writeback=True)
-    def add_text(self, db, content_key, text):
-        if not content_key in db['text']:
-            db['text'][content_key] = text
+    def add_text(self, db, content_key, text, lang):
+        if db['text'].get(content_key):
+            if db['text'][content_key].get(lang):
+                KeyError(f'Text with content key {content_key} ang language {lang} already exists')
+            db['text'][content_key].update({lang: text})
         else:
-            raise KeyError(f'Text with content key {content_key} already exists')
+            db['text'][content_key] = {lang: text}
 
     @Storage._file_access(writeback=True)
-    def edit_text(self, db, content_key, text):
-        db['text'][content_key] = text
+    def edit_text(self, db, content_key, text, lang):
+        db['text'][content_key][lang] = text
 
     @Storage._file_access(writeback=True)
-    def delete_text(seld, db, content_key):
-        del db['text'][content_key]
-        
+    def delete_text(seld, db, content_key, lang=None):
+        if lang is None:
+            del db['text'][content_key]
+        else:
+            del db['text'][content_key][lang]
