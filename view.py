@@ -1,5 +1,6 @@
 from user import Language
 from io import BytesIO
+from telebot import types
 
 class Text:
     def __init__(self, content_ru, content_en):
@@ -17,18 +18,25 @@ class Image:
 
 
 class Button:
-    def __init__(self, label_ru, label_en, view_name):
+    def __init__(self, view_name, label_ru, label_en, result):
+        self.view_name = view_name
         self.lang = Language
-        self.label = {
-            self.lang.RU: label_ru,
-            self.lang.EN: label_en
-        }
+        self.label = {self.lang.RU: label_ru, self.lang.EN: label_en}
+        self.result = result
+    
+    def __call__(self, user_lang):
+        return types.InlineKeyboardButton(self.label[user_lang], callback_data=self.result)
 
 
 class Keyboard:
     def __init__(self, view_name):
         self.view_name = view_name
         self.buttons = []
+    
+    def __call__(self, view_name):
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.add(*self.buttons)
+        return keyboard
 
 
 class View:
