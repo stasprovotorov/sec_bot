@@ -67,3 +67,31 @@ class StorageUsers(Storage):
     @Storage._file_access()
     def is_admin(self, db, user_id):
         return user_id in db['admins']
+
+
+class StorageContent(Storage):
+    _FILENAME = 'data_content'
+    _default_structure = {'text': {}, 'image': {}, 'keyboard': {}}
+
+    @Storage._file_access()
+    def get_text(self, db, content_key):
+        text = db['text'].get(content_key)
+        if text is None:
+            raise KeyError(f'Text with content key {content_key} not found')
+        return text
+
+    @Storage._file_access(writeback=True)
+    def add_text(self, db, content_key, text):
+        if not content_key in db['text']:
+            db['text'][content_key] = text
+        else:
+            raise KeyError(f'Text with content key {content_key} already exists')
+
+    @Storage._file_access(writeback=True)
+    def edit_text(self, db, content_key, text):
+        db['text'][content_key] = text
+
+    @Storage._file_access(writeback=True)
+    def delete_text(seld, db, content_key):
+        del db['text'][content_key]
+        
