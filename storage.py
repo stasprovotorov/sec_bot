@@ -3,7 +3,7 @@ import shelve
 from functools import wraps
 
 from user import Language
-from view import Image
+from view import Image, Keyboard, Button
 
 class Storage():
     _FOLDER = 'data_storage'
@@ -120,13 +120,13 @@ class StorageImage(StorageContent):
         del db['image'][content_key]
 
 
-class StorageKeyboard:
+class StorageKeyboard(StorageContent):
     @Storage._file_access()
     def get_keyboard(self, db, content_key):
         return db['keyboard'][content_key]
     
     @Storage._file_access(writeback=True)
-    def save_kayboard(self, db, content_key, keyboard):
+    def save_keyboard(self, db, content_key, keyboard):
         db['keyboard'][content_key] = keyboard
 
     @Storage._file_access(writeback=True)

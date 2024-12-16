@@ -18,8 +18,7 @@ class Image:
 
 
 class Button:
-    def __init__(self, view_name, label_ru, label_en, result):
-        self.view_name = view_name
+    def __init__(self, label_ru, label_en, result):
         self.lang = Language
         self.label = {self.lang.RU: label_ru, self.lang.EN: label_en}
         self.result = result
@@ -31,15 +30,21 @@ class Button:
 class Keyboard:
     def __init__(self, view_name):
         self.view_name = view_name
-        self.buttons = []
+        self.buttons = {}
+
+    def add_button(self, button):
+        self.buttons.update({button.label[Language.EN]: button})
     
-    def __call__(self, view_name):
+    def delete_button(self, button):
+        del self.buttons[button.label]
+    
+    def __call__(self):
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(*self.buttons)
         return keyboard
 
 
-class СontentOutput:
+class View:
     def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
         self.bot = obj_bot
         self.user_id = obj_user.user_id
