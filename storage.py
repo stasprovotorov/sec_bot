@@ -3,6 +3,7 @@ import shelve
 from functools import wraps
 
 from user import Language
+from view import Image
 
 class Storage():
     _FOLDER = 'data_storage'
@@ -73,7 +74,7 @@ class StorageUsers(Storage):
 
 class StorageContent(Storage):
     _FILENAME = 'data_content'
-    _default_structure = {'text': dict, 'image': dict, 'keyboard': dict, 'button': dict}
+    _default_structure = {'text': dict, 'image': dict, 'keyboard': dict}
 
 
 class StorageText(StorageContent):
@@ -105,10 +106,29 @@ class StorageText(StorageContent):
             del db['text'][content_key][lang]
 
 
-if __name__ == '__main__':
-    stg_text = StorageText()
+class StorageImage(StorageContent):
+    @Storage._file_access()
+    def get_image(self, db, content_key):
+        return db['image'][content_key]
+    
+    @Storage._file_access(writeback=True)
+    def save_image(self, db, content_key, image_obj):
+        db['image'][content_key] = image_obj
 
-    print(stg_text.__dict__)
+    @Storage._file_access(writeback=True)
+    def delete_image(self, db, content_key):
+        del db['image'][content_key]
 
-    with shelve.open('data_storage/data_content') as db:
-        print(dict(db))
+
+class StorageKeyboard:
+    @Storage._file_access()
+    def get_keyboard(self, db, content_key):
+        return db['keyboard'][content_key]
+    
+    @Storage._file_access(writeback=True)
+    def save_kayboard(self, db, content_key, keyboard):
+        db['keyboard'][content_key] = keyboard
+
+    @Storage._file_access(writeback=True)
+    def delete_keyboard(self, db, content_key):
+        del db['keyboard'][content_key]
