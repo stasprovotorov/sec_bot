@@ -75,6 +75,8 @@ class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {'text': dict, 'image': dict, 'keyboard': dict, 'button': dict}
 
+
+class StorageText(StorageContent):
     @Storage._file_access()
     def get_text(self, db, content_key, lang):
         text = db['text'].get(content_key)
@@ -101,3 +103,12 @@ class StorageContent(Storage):
             del db['text'][content_key]
         else:
             del db['text'][content_key][lang]
+
+
+if __name__ == '__main__':
+    stg_text = StorageText()
+
+    print(stg_text.__dict__)
+
+    with shelve.open('data_storage/data_content') as db:
+        print(dict(db))
