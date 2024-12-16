@@ -3,7 +3,7 @@ import shelve
 from functools import wraps
 
 from user import Language
-from view import Image, Keyboard, Button
+from view import Image, Keyboard, Button, Text
 
 class Storage():
     _FOLDER = 'data_storage'
@@ -86,13 +86,8 @@ class StorageText(StorageContent):
         return text[lang]
 
     @Storage._file_access(writeback=True)
-    def add_text(self, db, content_key, text, lang):
-        if db['text'].get(content_key):
-            if db['text'][content_key].get(lang):
-                KeyError(f'Text with content key {content_key} ang language {lang} already exists')
-            db['text'][content_key].update({lang: text})
-        else:
-            db['text'][content_key] = {lang: text}
+    def save_text(self, db, content_key, text_obj):
+        db['text'].update({content_key: text_obj})
 
     @Storage._file_access(writeback=True)
     def edit_text(self, db, content_key, text, lang):
@@ -132,3 +127,19 @@ class StorageKeyboard(StorageContent):
     @Storage._file_access(writeback=True)
     def delete_keyboard(self, db, content_key):
         del db['keyboard'][content_key]
+
+
+if __name__ == '__main__':
+    text1 = Text('Привет!', 'Hello!')
+    text2 = Text('Пока!', 'Bye!')
+
+    stg_text = StorageText()
+
+    stg_text.save_text('cmd1', text1)
+    stg_text.save_text('cmd2', text2)
+
+    with shelve.open(stg_text._file_path) as db:
+        print(dict(db))
+        text1_obj = db['text']['cmd1']
+
+    print(text1_obj.__dict__)
