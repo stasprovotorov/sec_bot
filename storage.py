@@ -91,3 +91,14 @@ class StorageContent(Storage):
     @Storage._file_access(writeback=True)
     def delete_content(self, db, content_type, content_key):
         del db[content_type.__name__][content_key]
+
+
+class StorageText(StorageContent):
+    def get_text(self, content_key):
+        return super().get_content(Text, content_key)
+
+    def save_text(self, content_key, text):
+        return super().save_content(Text, content_key, text)
+
+    def delete_text(self, content_key):
+        return super().delete_content(Text, content_key)
