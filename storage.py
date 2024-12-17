@@ -74,72 +74,20 @@ class StorageUsers(Storage):
 
 class StorageContent(Storage):
     _FILENAME = 'data_content'
-    _default_structure = {'text': dict, 'image': dict, 'keyboard': dict}
+    _default_structure = {
+        Text.__name__: dict, 
+        Image.__name__: dict, 
+        Keyboard.__name__: dict
+    }
 
-
-class StorageText(StorageContent):
     @Storage._file_access()
-    def get_text(self, db, content_key, lang):
-        text = db['text'].get(content_key)
-        if text is None:
-            raise KeyError(f'Text with content key {content_key} not found')
-        return text[lang]
-
-    @Storage._file_access(writeback=True)
-    def save_text(self, db, content_key, text_obj):
-        db['text'].update({content_key: text_obj})
-
-    @Storage._file_access(writeback=True)
-    def edit_text(self, db, content_key, text, lang):
-        db['text'][content_key][lang] = text
-
-    @Storage._file_access(writeback=True)
-    def delete_text(seld, db, content_key, lang=None):
-        if lang is None:
-            del db['text'][content_key]
-        else:
-            del db['text'][content_key][lang]
-
-
-class StorageImage(StorageContent):
-    @Storage._file_access()
-    def get_image(self, db, content_key):
-        return db['image'][content_key]
+    def get_content(self, db, content_type, content_key):
+        return db[content_type.__name__][content_key]
     
     @Storage._file_access(writeback=True)
-    def save_image(self, db, content_key, image_obj):
-        db['image'][content_key] = image_obj
+    def save_content(self, db, content_type, content_key, content_obj):
+        db[content_type.__name__].update({content_key: content_obj})
 
     @Storage._file_access(writeback=True)
-    def delete_image(self, db, content_key):
-        del db['image'][content_key]
-
-
-class StorageKeyboard(StorageContent):
-    @Storage._file_access()
-    def get_keyboard(self, db, content_key):
-        return db['keyboard'][content_key]
-    
-    @Storage._file_access(writeback=True)
-    def save_keyboard(self, db, content_key, keyboard):
-        db['keyboard'][content_key] = keyboard
-
-    @Storage._file_access(writeback=True)
-    def delete_keyboard(self, db, content_key):
-        del db['keyboard'][content_key]
-
-
-if __name__ == '__main__':
-    text1 = Text('Привет!', 'Hello!')
-    text2 = Text('Пока!', 'Bye!')
-
-    stg_text = StorageText()
-
-    stg_text.save_text('cmd1', text1)
-    stg_text.save_text('cmd2', text2)
-
-    with shelve.open(stg_text._file_path) as db:
-        print(dict(db))
-        text1_obj = db['text']['cmd1']
-
-    print(text1_obj.__dict__)
+    def delete_content(self, db, content_type, content_key):
+        del db[content_type.__name__][content_key]
