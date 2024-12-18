@@ -113,3 +113,14 @@ class StorageImage(StorageContent):
 
     def delete_image(self, content_key):
         return super()._delete_content(Image, content_key)
+
+
+class StorageKeyboard(StorageContent):
+    def get_keyboard(self, content_key):
+        return super()._get_content(Keyboard, content_key)
+    
+    def save_keyboard(self, content_key, keyboard):
+        return super()._save_content(Keyboard, content_key, keyboard)
+
+    def delete_keyboard(self, content_key):
+        return super()._delete_content(Keyboard, content_key)
