@@ -124,24 +124,3 @@ class StorageKeyboard(StorageContent):
 
     def delete_keyboard(self, content_key):
         return super()._delete_content(Keyboard, content_key)
-
-
-if __name__ == '__main__':
-    stg_keyboard = StorageKeyboard()
-
-    kb_start = Keyboard()
-    kb_start_btn = [
-        Button('Текст', 'Text', 'vw_text'),
-        Button('Картинка', 'Picture', 'vw_pic'),
-    ]
-    for button in kb_start_btn:
-        kb_start.add_button(button)
-
-    kb_back = Keyboard()
-    kb_back.add_button(Button('Назад', 'Back', 'start'))
-
-    stg_keyboard.save_keyboard('start', kb_start)
-    stg_keyboard.save_keyboard('back', kb_back)
-
-    with shelve.open(stg_keyboard._file_path) as db:
-        print(dict(db))
