@@ -104,7 +104,7 @@ class StorageText(StorageContent):
         return super()._delete_content(Text, content_key)
 
 
-class StrorageImage(StorageContent):
+class StorageImage(StorageContent):
     def get_image(self, content_key):
         return super()._get_content(Image, content_key)
 
