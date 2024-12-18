@@ -4,10 +4,9 @@ from telebot import types
 
 class Text:
     def __init__(self, content_ru, content_en):
-        self.lang = Language
         self.content = {
-            self.lang.RU: content_ru,
-            self.lang.EN: content_en
+            Language.RU: content_ru,
+            Language.EN: content_en
         }
 
 

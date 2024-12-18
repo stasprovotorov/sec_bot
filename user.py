@@ -31,7 +31,7 @@ class User:
             self.__dict__.update(user_obj.__dict__)
         except KeyError:
             self._user_id = user_id
-            self.lang = lang
+            self.lang = Language.RU if lang == 'ru' else Language.EN
             self.role = Roles.ADMIN if self._users_db.is_admin(self.user_id) else Roles.BASIC
             self._users_db.save_user(self)
 
