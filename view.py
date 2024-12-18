@@ -18,18 +18,16 @@ class Image:
 
 
 class Button:
-    def __init__(self, label_ru, label_en, result):
-        self.lang = Language
-        self.label = {self.lang.RU: label_ru, self.lang.EN: label_en}
-        self.result = result
+    def __init__(self, label_ru, label_en, content_key_back):
+        self.label = {Language.RU: label_ru, Language.EN: label_en}
+        self.content_key_back = content_key_back
     
-    def __call__(self, user_lang):
-        return types.InlineKeyboardButton(self.label[user_lang], callback_data=self.result)
+    def __call__(self, lang):
+        return types.InlineKeyboardButton(self.label[lang], callback_data=self.content_key_back)
 
 
 class Keyboard:
-    def __init__(self, view_name):
-        self.view_name = view_name
+    def __init__(self):
         self.buttons = {}
 
     def add_button(self, button):
@@ -38,9 +36,10 @@ class Keyboard:
     def delete_button(self, button):
         del self.buttons[button.label]
     
-    def __call__(self):
+    def __call__(self, lang):
         keyboard = types.InlineKeyboardMarkup()
-        keyboard.add(*self.buttons)
+        for button in self.buttons.values():
+            keyboard.add(button(lang))
         return keyboard
 
 
