@@ -81,24 +81,24 @@ class StorageContent(Storage):
     }
 
     @Storage._file_access()
-    def get_content(self, db, content_type, content_key):
+    def _get_content(self, db, content_type, content_key):
         return db[content_type.__name__][content_key]
     
     @Storage._file_access(writeback=True)
-    def save_content(self, db, content_type, content_key, content_obj):
+    def _save_content(self, db, content_type, content_key, content_obj):
         db[content_type.__name__].update({content_key: content_obj})
 
     @Storage._file_access(writeback=True)
-    def delete_content(self, db, content_type, content_key):
+    def _delete_content(self, db, content_type, content_key):
         del db[content_type.__name__][content_key]
 
 
 class StorageText(StorageContent):
     def get_text(self, content_key):
-        return super().get_content(Text, content_key)
+        return super()._get_content(Text, content_key)
 
     def save_text(self, content_key, text):
-        return super().save_content(Text, content_key, text)
+        return super()._save_content(Text, content_key, text)
 
     def delete_text(self, content_key):
-        return super().delete_content(Text, content_key)
+        return super()._delete_content(Text, content_key)
