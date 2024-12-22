@@ -80,6 +80,16 @@ class StorageContent(Storage):
         Keyboard.__name__: dict
     }
 
+    def __init__(self, stg_text=None, stg_image=None, stg_keyboard=None):
+        super().__init__()
+        self.text = stg_text
+        self.image = stg_image
+        self.keyboard = stg_keyboard
+
+    @classmethod
+    def create(cls):
+        return cls(StorageText(), StorageImage(), StorageKeyboard())
+
     @Storage._file_access()
     def _get_content(self, db, content_type, content_key):
         return db[content_type.__name__][content_key]
@@ -124,3 +134,12 @@ class StorageKeyboard(StorageContent):
 
     def delete_keyboard(self, content_key):
         return super()._delete_content(Keyboard, content_key)
+
+
+if __name__ == '__main__':
+    stg_content = StorageContent.create()
+
+    print(stg_content.text)
+    print(stg_content.image)
+    print(stg_content.keyboard)
+    
