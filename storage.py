@@ -134,12 +134,3 @@ class StorageKeyboard(StorageContent):
 
     def delete_keyboard(self, content_key):
         return super()._delete_content(Keyboard, content_key)
-
-
-if __name__ == '__main__':
-    stg_content = StorageContent.create()
-
-    print(stg_content.text)
-    print(stg_content.image)
-    print(stg_content.keyboard)
-    
