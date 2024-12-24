@@ -9,11 +9,17 @@ class Text:
             Language.EN: content_en
         }
 
+    def __call__(self, language):
+        return self.content[language]
+
 
 class Image:
     def __init__(self, img_path):
         with open(img_path, 'rb') as img:
             self.img = img.read()
+
+    def __call__(self):
+        return BytesIO(self.img)
 
 
 class Button:
@@ -43,14 +49,29 @@ class Keyboard:
 
 
 class View:
-    def __init__(self, obj_bot, obj_user, obj_text=None, obj_image=None):
-        self.bot = obj_bot
-        self.user_id = obj_user.user_id
-        self.text = obj_text.content[obj_user.lang] if obj_text else obj_text
-        self.image = BytesIO(obj_image.img) if obj_image else obj_image
-        
-    def send(self):
-        if self.text:
-            self.bot.send_message(self.user_id, self.text)
-        if self.image:
-            self.bot.send_photo(self.user_id, self.image)
+    def __init__(self, bot):
+        self.bot = bot
+        self.text = None
+        self.image = None
+        self.keyboard = None
+    
+    def set_text(self, content_key, stg_text, lang):
+        obj_text = stg_text.get_text(content_key)
+        self.text = obj_text.content[lang]
+
+    def set_image(self, content_key, stg_image):
+        obj_image = stg_image.get_image(content_key)
+        self.image = obj_image()
+
+    def set_keyboard(self, content_key, stg_keyboard, lang):
+        obj_keyboard = stg_keyboard.get_keyboard(content_key)
+        self.keyboard = obj_keyboard(lang)
+
+    def send(self, chat_id, stg_content, key_content, language):
+        text = stg_content.text.get_text(key_content)
+        image = stg_content.image.get_image(key_content)
+        keyboard = stg_content.keyboard.get_keyboard(key_content)
+        if image:
+            self.bot.send_photo(chat_id, photo=image(), caption=text(language), reply_markup=keyboard(language))
+        else:
+            self.bot.send_message(chat_id, text=text(language), reply_markup=keyboard(language))

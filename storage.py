@@ -92,7 +92,7 @@ class StorageContent(Storage):
 
     @Storage._file_access()
     def _get_content(self, db, content_type, content_key):
-        return db[content_type.__name__][content_key]
+        return db[content_type.__name__].get(content_key)
     
     @Storage._file_access(writeback=True)
     def _save_content(self, db, content_type, content_key, content_obj):
