@@ -139,5 +139,9 @@ class StorageKeyboard(StorageContent):
 if __name__ == '__main__':
     stg_content = StorageContent.create()
 
+    with open('sec_poster.jpg', 'rb') as img:
+        image_bytes = img.read()
+
     with shelve.open('data_storage/data_content', writeback=True) as db:
-        db['Text'].update({'start': {Language.RU: 'Привет!', Language.EN: 'Hello!'}})
+        db['Image'].update({'start': image_bytes})
+

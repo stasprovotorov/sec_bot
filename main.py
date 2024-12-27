@@ -15,8 +15,10 @@ vw = View(bot, stg_content)
 content_key = 'start'
 user_lang = Language.EN
 text = vw.get_text(content_key, user_lang) 
+image = vw.get_image(content_key)
 
 print(text)
+print(type(image))
 
 # @bot.message_handler(commands=['start'])
 # def start(message):

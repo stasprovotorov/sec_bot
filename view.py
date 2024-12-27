@@ -60,3 +60,6 @@ class View:
         self.text = self.stg_content.text.get_text(content_key)[language] # ![language] -> _get_content
         return self.text
     
+    def get_image(self, content_key):
+        self.image = self.stg_content.image.get_image(content_key)
+        return self.image
