@@ -49,29 +49,14 @@ class Keyboard:
 
 
 class View:
-    def __init__(self, bot):
+    def __init__(self, bot, stg_content):
         self.bot = bot
+        self.stg_content = stg_content
         self.text = None
         self.image = None
         self.keyboard = None
+
+    def get_text(self, content_key, language):
+        self.text = self.stg_content.text.get_text(content_key)[language] # ![language] -> _get_content
+        return self.text
     
-    def set_text(self, content_key, stg_text, lang):
-        obj_text = stg_text.get_text(content_key)
-        self.text = obj_text.content[lang]
-
-    def set_image(self, content_key, stg_image):
-        obj_image = stg_image.get_image(content_key)
-        self.image = obj_image()
-
-    def set_keyboard(self, content_key, stg_keyboard, lang):
-        obj_keyboard = stg_keyboard.get_keyboard(content_key)
-        self.keyboard = obj_keyboard(lang)
-
-    def send(self, chat_id, stg_content, key_content, language):
-        text = stg_content.text.get_text(key_content)
-        image = stg_content.image.get_image(key_content)
-        keyboard = stg_content.keyboard.get_keyboard(key_content)
-        if image:
-            self.bot.send_photo(chat_id, photo=image(), caption=text(language), reply_markup=keyboard(language))
-        else:
-            self.bot.send_message(chat_id, text=text(language), reply_markup=keyboard(language))

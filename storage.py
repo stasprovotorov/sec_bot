@@ -134,3 +134,10 @@ class StorageKeyboard(StorageContent):
 
     def delete_keyboard(self, content_key):
         return super()._delete_content(Keyboard, content_key)
+
+
+if __name__ == '__main__':
+    stg_content = StorageContent.create()
+
+    with shelve.open('data_storage/data_content', writeback=True) as db:
+        db['Text'].update({'start': {Language.RU: 'Привет!', Language.EN: 'Hello!'}})
