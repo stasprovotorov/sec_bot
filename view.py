@@ -63,3 +63,7 @@ class View:
     def get_image(self, content_key):
         self.image = self.stg_content.image.get_image(content_key)
         return self.image
+
+    def get_keyboard(self, content_key, language):
+        self.keyboard = self.stg_content.get_keyboard(content_key)[language]
+        return self.keyboard

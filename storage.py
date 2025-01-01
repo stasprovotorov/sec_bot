@@ -75,73 +75,63 @@ class StorageUsers(Storage):
 class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {
-        Text.__name__: dict, 
-        Image.__name__: dict, 
-        Keyboard.__name__: dict
+        'text' : dict, 
+        'image' : dict, 
+        'button': dict, 
+        'keyboard' : dict
     }
 
-    def __init__(self, stg_text=None, stg_image=None, stg_keyboard=None):
-        super().__init__()
-        self.text = stg_text
-        self.image = stg_image
-        self.keyboard = stg_keyboard
+    @Storage._file_access()
+    def get_text(self, db, content_key, lang):
+        text = db['text'].get(content_key)
+        if text:
+            return text[lang]
+        return text
 
-    @classmethod
-    def create(cls):
-        return cls(StorageText(), StorageImage(), StorageKeyboard())
+    @Storage._file_access(writeback=True)
+    def save_text(self, db, content_key, lang, value):
+        if db['text'].get(content_key):
+            db['text'][content_key].update({lang: value})
+        else:
+            db['text'][content_key] = {lang: value}
+
+    @Storage._file_access(writeback=True)
+    def delete_text(self, db, content_key):
+        del db['text'][content_key]
 
     @Storage._file_access()
-    def _get_content(self, db, content_type, content_key):
-        return db[content_type.__name__].get(content_key)
-    
-    @Storage._file_access(writeback=True)
-    def _save_content(self, db, content_type, content_key, content_obj):
-        db[content_type.__name__].update({content_key: content_obj})
+    def get_image(self, db, content_key):
+        return db['image'].get(content_key)    
 
     @Storage._file_access(writeback=True)
-    def _delete_content(self, db, content_type, content_key):
-        del db[content_type.__name__][content_key]
+    def save_image(self, db, content_key, image_bytes):
+        db['image'][content_key] = image_bytes
 
+    @Storage._file_access(writeback=True)
+    def delete_image(self, db, content_key):
+        del db['image'][content_key]
 
-class StorageText(StorageContent):
-    def get_text(self, content_key):
-        return super()._get_content(Text, content_key)
+    @Storage._file_access()
+    def get_button(self, db, button_name, lang):
+        label = db['button'][button_name]['label'][lang]
+        content_key_back = db['button'][button_name]['content_key_back']
+        return label, content_key_back
 
-    def save_text(self, content_key, text):
-        return super()._save_content(Text, content_key, text)
+    @Storage._file_access(writeback=True)
+    def save_button(self, db, button_name, lang, label, content_key_back):
+        if db['button'].setdefault(button_name, {}):
+            db['button'][button_name]['label'].update({lang: label})
+        else:
+            db['button'][button_name].update(
+                {
+                    'label': {lang: label},
+                    'content_key_back': content_key_back
+                }
+            )
 
-    def delete_text(self, content_key):
-        return super()._delete_content(Text, content_key)
-
-
-class StorageImage(StorageContent):
-    def get_image(self, content_key):
-        return super()._get_content(Image, content_key)
-
-    def save_image(self, content_key, image):
-        return super()._save_content(Image, content_key, image)
-
-    def delete_image(self, content_key):
-        return super()._delete_content(Image, content_key)
-
-
-class StorageKeyboard(StorageContent):
-    def get_keyboard(self, content_key):
-        return super()._get_content(Keyboard, content_key)
-    
-    def save_keyboard(self, content_key, keyboard):
-        return super()._save_content(Keyboard, content_key, keyboard)
-
-    def delete_keyboard(self, content_key):
-        return super()._delete_content(Keyboard, content_key)
-
-
-if __name__ == '__main__':
-    stg_content = StorageContent.create()
-
-    with open('sec_poster.jpg', 'rb') as img:
-        image_bytes = img.read()
-
-    with shelve.open('data_storage/data_content', writeback=True) as db:
-        db['Image'].update({'start': image_bytes})
-
+    @Storage._file_access()
+    def get_keyboard(self, db, content_key, lang):
+        keyboard = []
+        for button_name in db['keyboard'][content_key]:
+            keyboard.append(self.get_button(button_name, lang))
+        return keyboard
