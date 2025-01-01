@@ -139,3 +139,11 @@ class StorageContent(Storage):
         for button_name in db['keyboard'][content_key]:
             keyboard.append(self.get_button(button_name, lang))
         return keyboard
+
+    @Storage._file_access(writeback=True)
+    def save_keyboard(self, db, content_key, button_names):
+        db['keyboard'][content_key] = button_names
+
+    @Storage._file_access(writeback=True)
+    def delete_keyboard(seld, db, content_key):
+        del db['keyboard'][content_key]
