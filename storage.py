@@ -129,6 +129,10 @@ class StorageContent(Storage):
                 }
             )
 
+    @Storage._file_access(writeback=True)
+    def delete_button(self, db, button_name):
+        del db['button'][button_name]
+
     @Storage._file_access()
     def get_keyboard(self, db, content_key, lang):
         keyboard = []
