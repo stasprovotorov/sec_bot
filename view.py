@@ -52,18 +52,26 @@ class View:
     def __init__(self, bot, stg_content):
         self.bot = bot
         self.stg_content = stg_content
-        self.text = None
-        self.image = None
-        self.keyboard = None
 
-    def get_text(self, content_key, language):
-        self.text = self.stg_content.text.get_text(content_key)[language] # ![language] -> _get_content
-        return self.text
-    
-    def get_image(self, content_key):
-        self.image = self.stg_content.image.get_image(content_key)
-        return self.image
+    def _get_text(self, content_key, lang):
+        return self.stg_content.get_text(content_key, lang)
 
-    def get_keyboard(self, content_key, language):
-        self.keyboard = self.stg_content.get_keyboard(content_key)[language]
-        return self.keyboard
+    def _get_image(self, content_key):
+        return self.stg_content.get_image(content_key)
+
+    def _get_keyboard(self, content_key, lang):
+        button_names = self.stg_content.get_keyboard(content_key)
+        keyboard = types.InlineKeyboardMarkup()
+        for button_name in button_names:
+            label, content_key_back = self.stg_content.get_button(button_name, lang)
+            keyboard.add(types.InlineKeyboardButton(label, callback_data=content_key_back))
+        return keyboard
+
+    def send(self, chat_id, content_key, lang):
+        text = self._get_text(self, content_key, lang)
+        image = self._get_image(self, content_key)
+        keyboard = self._get_keyboard(self, content_key, lang)
+        if image:
+            self.bot.send_photo(chat_id, image, caption=text, reply_markup=keyboard)
+        else:
+            self.bot.send_message(chat_id, text, reply_markup=keyboard)
