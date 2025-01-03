@@ -10,24 +10,21 @@ TOKEN = config['TOKEN']
 
 bot = TeleBot(TOKEN)
 stg_users = StorageUsers()
-stg_content = StorageContent.create()
+stg_content = StorageContent()
 vw = View(bot, stg_content)
-content_key = 'start'
-user_lang = Language.EN
-text = vw.get_text(content_key, user_lang) 
-image = vw.get_image(content_key)
-
-print(text)
-print(type(image))
-
-# @bot.message_handler(commands=['start'])
-# def start(message):
-#     pass
 
 
-# @bot.callback_query_handler(func=lambda call: True)
-# def buttons_callback(call):
-#     pass
+@bot.message_handler(commands=['start'])
+def start(message):
+    content_key = message.text.lstrip('/')
+    user = User(stg_users, message.from_user.id, message.from_user.language_code)
+    vw.send(message.chat.id, content_key, user.lang)
 
-# bot.polling(none_stop=True)
+@bot.callback_query_handler(func=lambda call: True)
+def buttons_callback(call):
+    content_key = call.data
+    user = User(stg_users, call.message.from_user.id, call.message.from_user.language_code)
+    vw.send(call.message.chat.id, content_key, user.lang)
 
+
+bot.polling(none_stop=True)
