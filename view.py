@@ -59,17 +59,17 @@ class View:
     def _get_image(self, content_key):
         return self.stg_content.get_image(content_key)
 
-    def _get_keyboard(self, content_key, lang):
-        buttons_data = self.stg_content.get_keyboard(content_key, lang)
+    def _get_keyboard(self, content_key, lang, is_admin):
+        buttons_data = self.stg_content.get_keyboard(content_key, lang, is_admin)
         keyboard = types.InlineKeyboardMarkup()
         for label, content_key_back in buttons_data:
             keyboard.add(types.InlineKeyboardButton(label, callback_data=content_key_back))
         return keyboard
 
-    def send(self, chat_id, content_key, lang):
+    def send(self, chat_id, content_key, lang, is_admin):
         text = self._get_text(content_key, lang)
         image = self._get_image(content_key)
-        keyboard = self._get_keyboard(content_key, lang)
+        keyboard = self._get_keyboard(content_key, lang, is_admin)
         if image:
             self.bot.send_photo(chat_id, image, caption=text, reply_markup=keyboard)
         else:

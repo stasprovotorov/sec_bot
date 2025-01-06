@@ -2,7 +2,7 @@ import os
 import shelve
 from functools import wraps
 
-from user import Language
+from user import Language, Roles
 from view import Image, Keyboard, Button, Text
 
 class Storage():
@@ -134,10 +134,12 @@ class StorageContent(Storage):
         del db['button'][button_name]
 
     @Storage._file_access()
-    def get_keyboard(self, db, content_key, lang):
+    def get_keyboard(self, db, content_key, lang, is_admin):
         keyboard = []
         for button_name in db['keyboard'][content_key]:
             keyboard.append(self.get_button(button_name, lang))
+        if content_key == 'start' and is_admin:
+            keyboard.append(self.get_button('Edit', lang))
         return keyboard
 
     @Storage._file_access(writeback=True)
