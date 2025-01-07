@@ -18,9 +18,14 @@ vw = View(bot, stg_content)
 def start(message):
     content_key = message.text.lstrip('/')
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
-    # is_admin = stg_users.is_admin(user.user_id)
-    is_admin = not stg_users.is_admin(user.user_id)
+    is_admin = stg_users.is_admin(user.user_id)
+    # is_admin = not stg_users.is_admin(user.user_id)
     vw.send(message.chat.id, content_key, user.lang, is_admin)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == 'edit')
+def edit(call):
+    pass
 
 
 @bot.callback_query_handler(func=lambda call: True)
