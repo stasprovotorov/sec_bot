@@ -149,3 +149,10 @@ class StorageContent(Storage):
     @Storage._file_access(writeback=True)
     def delete_keyboard(seld, db, content_key):
         del db['keyboard'][content_key]
+
+
+if __name__ == '__main__':
+    stg_content = StorageContent()
+
+    with shelve.open(stg_content._file_path) as db:
+        print(db['button'])
