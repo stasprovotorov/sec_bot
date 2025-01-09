@@ -6,6 +6,8 @@ from telebot.handler_backends import State, StatesGroup
 from telebot.storage import StateMemoryStorage
 from view import Text, Image, View
 
+# from editor import ButtonStates, Editor
+
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
 
@@ -17,19 +19,6 @@ stg_users = StorageUsers()
 stg_content = StorageContent()
 vw = View(bot, stg_content)
 
-
-class EditorStates(StatesGroup):
-    ask_button_name = State()
-    ask_content_key = State()
-    ask_label_ru = State()
-    ask_label_en = State()
-    ask_content_key_back = State()
-
-    button_name = None
-    content_key = None
-    label_ru = None
-    label_en = None
-    content_key_back = None
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -61,47 +50,6 @@ def get_button_name(message):
     print(f'Button name set to: {EditorStates.button_name}')
     bot.send_message(message.from_user.id, 'Enter content_key')
     bot.set_state(message.from_user.id, EditorStates.ask_content_key, message.chat.id)
-
-
-@bot.message_handler(state=EditorStates.ask_content_key, content_types=['text'])
-def get_button_content_key(message):
-    EditorStates.content_key = message.text
-    print(f'Button content_key set to: {EditorStates.content_key}')
-    bot.send_message(message.from_user.id, 'Enter button label_ru')
-    bot.set_state(message.from_user.id, EditorStates.ask_label_ru, message.chat.id)
-
-@bot.message_handler(state=EditorStates.ask_label_ru, content_types=['text'])
-def get_button_label_ru(message):
-    EditorStates.label_ru = message.text
-    print(f'Button label_ru set to: {EditorStates.label_ru}')
-    bot.send_message(message.from_user.id, 'Enter button label_en')
-    bot.set_state(message.from_user.id, EditorStates.ask_label_en, message.chat.id)
-
-
-@bot.message_handler(state=EditorStates.ask_label_en, content_types=['text'])
-def get_button_label_en(message):
-    EditorStates.label_en = message.text
-    print(f'Button label_en set to: {EditorStates.label_en}')
-    bot.send_message(message.from_user.id, 'Enter content_key_back')
-    bot.set_state(message.from_user.id, EditorStates.ask_content_key_back, message.chat.id)
-
-
-@bot.message_handler(state=EditorStates.ask_content_key_back, content_types=['text'])
-def get_button_content_key_back(message):
-    EditorStates.content_key_back = message.text
-    print(f'Button content_key_back set to: {EditorStates.content_key_back}')
-    stg_content.save_button(
-        EditorStates.button_name,
-        Language.RU,
-        EditorStates.label_ru,
-        EditorStates.content_key_back
-    )
-    stg_content.save_button(
-        EditorStates.button_name,
-        Language.EN,
-        EditorStates.label_en,
-        EditorStates.content_key_back
-    )
 
 
 @bot.callback_query_handler(func=lambda call: call.data != 'create_button')
