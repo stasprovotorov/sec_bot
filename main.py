@@ -6,7 +6,7 @@ from telebot.handler_backends import State, StatesGroup
 from telebot.storage import StateMemoryStorage
 from view import Text, Image, View
 
-# from editor import ButtonStates, Editor
+from editor import Editor, StatesButton, editor_dialog
 
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
@@ -19,11 +19,13 @@ stg_users = StorageUsers()
 stg_content = StorageContent()
 vw = View(bot, stg_content)
 
+editor = Editor()
 
 @bot.message_handler(commands=['start'])
 def start(message):
     content_key = message.text.lstrip('/')
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
+    user.switch_lang()
     is_admin = stg_users.is_admin(user.user_id)
     # is_admin = not stg_users.is_admin(user.user_id)
     vw.send(message.chat.id, content_key, user.lang, is_admin)
@@ -31,25 +33,27 @@ def start(message):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def edit(call):
-    msg = 'Hello! What you want to edit?'
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+    message = editor_dialog[call.data][user.lang]
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton('Create Button', callback_data='create_button'))
-    bot.send_message(call.message.chat.id, msg, reply_markup=kb)
+    bot.send_message(call.message.chat.id, message, reply_markup=kb)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'create_button')
-def ask_button_name(call):
-    msg = 'Enter the button_name'
-    bot.send_message(call.from_user.id, msg)
-    bot.set_state(call.from_user.id, EditorStates.ask_button_name, call.message.chat.id)
+def start_create_button(call):
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+    bot.set_state(call.from_user.id, StatesButton.btn_sys_name, call.message.chat.id)
+    state_key, question_key = bot.get_state(user.user_id).split(':')
+    bot.send_message(user.user_id, editor_dialog[state_key][question_key][user.lang])
 
 
-@bot.message_handler(state=EditorStates.ask_button_name, content_types=['text'])
-def get_button_name(message):
-    EditorStates.button_name = message.text
-    print(f'Button name set to: {EditorStates.button_name}')
-    bot.send_message(message.from_user.id, 'Enter content_key')
-    bot.set_state(message.from_user.id, EditorStates.ask_content_key, message.chat.id)
+@bot.message_handler(state=StatesButton.get_states_obj(), content_types=['text'])
+def dialog_create_button(message):
+    user = User(stg_users, message.from_user.id, message.from_user.language_code)
+    user_state = bot.get_state(message.from_user.id)
+    chat_id = message.chat.id
+    editor.dialog_provider(bot, user, user_state, chat_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data != 'create_button')

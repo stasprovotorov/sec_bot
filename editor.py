@@ -1,11 +1,19 @@
 from user import Language
 from telebot.handler_backends import StatesGroup, State
-
+from editor_dialog import editor_dialog
 
 class StatesBase(StatesGroup):
     @classmethod
-    def get_states(cls):
+    def get_states_obj(cls):
         return [i for i in cls.__dict__.values() if isinstance(i, State)]
+
+    @classmethod
+    def get_states_str(cls):
+        states = []
+        for attr, value in cls.__dict__.items():
+            if isinstance(value, State):
+                states.append(f'{cls.__name__}:{attr}')
+        return states
 
 
 class StatesText(StatesBase):
@@ -27,38 +35,20 @@ class StatesButton(StatesBase):
     vw_next = State()
 
 
-editor_dialog = {
-    'button': {
-        StatesButton.btn_sys_name: {
-            Language.RU: 'Введите системное имя кнопки',
-            Language.EN: 'Enter system button name'
-        },
-        StatesButton.btn_label_ru: {
-            Language.RU: 'Введите значение лейбла кнопки на русском языке',
-            Language.EN: 'Enter label value on russian language'
-        },
-        StatesButton.btn_label_en: {
-            Language.RU: 'Введите значение лейбла кнопки на английском языке',
-            Language.EN: 'Enter label value on english language'
-        },
-        StatesButton.vw_src: {
-            Language.RU: 'Введите имя исходного представления',
-            Language.EN: 'Enter source view name'
-        },
-        StatesButton.vw_next: {
-            Language.RU: 'Введите имя поледующего представления',
-            Language.EN: 'Enter next view name'
-        }
-    }
-}
-
-
 class Editor:
     def __init__(self):
-        self.states_txt = StatesText.get_states()
-        self.states_img = StatesImage.get_states()
-        self.states_btn = StatesButton.get_states()
+        self.states = {
+            'StatesText': StatesText.get_states_str(),
+            'StatesImage': StatesImage.get_states_str(),
+            'StatesButton': StatesButton.get_states_str()
+        }
 
-
-if __name__ == '__main__':
-    editor = Editor()
+    def dialog_provider(self, bot, user, user_state, chat_id):
+        state_key, msg_key = user_state.split(':')
+        msg = editor_dialog[state_key][msg_key][user.lang]
+        bot.send_message(user.user_id, msg)
+        try:
+            index = self.states[state_key].index(user_state) + 1
+            bot.set_state(user.user_id, self.states[state_key][index], chat_id)
+        except IndexError:
+            bot.delete_state(user.user_id, )
