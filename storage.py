@@ -151,8 +151,6 @@ class StorageContent(Storage):
         del db['keyboard'][content_key]
 
 
-if __name__ == '__main__':
-    stg_content = StorageContent()
-
-    with shelve.open(stg_content._file_path) as db:
-        print(db['button'])
+class StorageEditor(Storage):
+    _FILENAME = 'data_editor'
+    _default_structure = {'dialogs': dict, 'buttons': dict}
