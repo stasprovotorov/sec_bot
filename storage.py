@@ -75,10 +75,10 @@ class StorageUsers(Storage):
 class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {
-        'text' : dict, 
-        'image' : dict, 
-        'button': dict, 
-        'keyboard' : dict
+        'views': dict,
+        'texts': dict,
+        'images': dict,
+        'buttons': dict
     }
 
     @Storage._file_access()
@@ -139,7 +139,7 @@ class StorageContent(Storage):
         for button_name in db['keyboard'][content_key]:
             keyboard.append(self.get_button(button_name, lang))
         if content_key == 'start' and is_admin:
-            keyboard.append(self.get_button('Edit', lang))
+            keyboard.append(self.get_button('Editor', lang))
         return keyboard
 
     @Storage._file_access(writeback=True)
@@ -151,6 +151,11 @@ class StorageContent(Storage):
         del db['keyboard'][content_key]
 
 
-class StorageEditor(Storage):
-    _FILENAME = 'data_editor'
-    _default_structure = {'dialogs': dict, 'buttons': dict}
+if __name__ == '__main__':
+    stg_content = StorageContent()
+    
+    with shelve.open(stg_content._file_path) as db:
+        for key, value in dict(db).items():
+            if key == 'images':
+                continue
+            print(key, value)

@@ -57,7 +57,8 @@ class User:
     
     @lang.setter
     def lang(self, value):
-        self._lang = Language.RU if value in ('ru', Language.RU) else Language.EN
+        self._lang = value
+        # self._lang = Language.RU if value in ('ru', Language.RU) else Language.EN
 
     @lang.deleter
     def lang(self):
