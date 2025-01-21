@@ -80,3 +80,35 @@ class StorageContent(Storage):
         'images': dict,
         'buttons': dict
     }
+
+    def initialize(self):
+        self.views = StorageViews()
+
+
+class StorageViews(StorageContent):
+    @Storage._file_access()
+    def get(self, db, view):
+        return db['views'][view]
+
+    @Storage._file_access(writeback=True)
+    def save(self, db, view, text, buttons, image=None):
+        db['views'].setdefault(view, {})
+        db['views'][view]['text'] = text
+        db['views'][view]['buttons'] = buttons
+        db['views'][view]['image'] = image
+
+    @Storage._file_access(writeback=True)
+    def delete(self, db, view):
+        del db['views'][view]
+
+
+class StorageTexts:
+    pass
+
+
+class StorageImages:
+    pass
+
+
+class StorageButtons:
+    pass
