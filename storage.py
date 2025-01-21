@@ -83,6 +83,9 @@ class StorageContent(Storage):
 
     def initialize(self):
         self.views = StorageViews()
+        self.texts = StorageTexts()
+        self.images = StorageImages()
+        self.buttons = StorageButtons()
 
 
 class StorageViews(StorageContent):
@@ -91,24 +94,61 @@ class StorageViews(StorageContent):
         return db['views'][view]
 
     @Storage._file_access(writeback=True)
-    def save(self, db, view, text, buttons, image=None):
-        db['views'].setdefault(view, {})
-        db['views'][view]['text'] = text
-        db['views'][view]['buttons'] = buttons
-        db['views'][view]['image'] = image
+    def save(self, db, name, text, buttons, image=None):
+        db['views'].setdefault(name, {})
+        db['views'][name]['text'] = text
+        db['views'][name]['buttons'] = buttons
+        db['views'][name]['image'] = image
 
     @Storage._file_access(writeback=True)
-    def delete(self, db, view):
-        del db['views'][view]
+    def delete(self, db, name):
+        del db['views'][name]
 
 
-class StorageTexts:
-    pass
+class StorageTexts(StorageContent):
+    @Storage._file_access()
+    def get(self, db, name, lang):
+        return db['texts'][name][lang]
+
+    @Storage._file_access(writeback=True)
+    def save(self, db, name, text_ru, text_en):
+        db['texts'].setdefault(name, {})
+        db['texts'][name]['ru'] = text_ru
+        db['texts'][name]['en'] = text_en
+
+    @Storage._file_access(writeback=True)
+    def delete(self, db, name):
+        del db['texts'][name]
 
 
-class StorageImages:
-    pass
+class StorageImages(StorageContent):
+    @Storage._file_access()
+    def get(self, db, name):
+        return db['images'][name]
+
+    @Storage._file_access(writeback=True)
+    def save(self, db, name, image):
+        db['images'][name] = image
+
+    @Storage._file_access(writeback=True)
+    def delete(self, db, name):
+        del db['images'][name]
 
 
-class StorageButtons:
-    pass
+class StorageButtons(StorageContent):
+    @Storage._file_access()
+    def get(self, db, name, lang):
+        label = db['buttons'][name]['label'][lang]
+        to_view = db['buttons'][name]['to_view']
+        return label, to_view
+
+    @Storage._file_access(writeback=True)
+    def save(self, db, name, label_ru, label_en, to_view):
+        db['buttons'][name] = {
+            'label': {'ru': label_ru, 'en': label_en},
+            'to_view': to_view
+        }
+
+    @Storage._file_access(writeback=True)
+    def delete(self, db, name):
+        del db['buttons'][name]
