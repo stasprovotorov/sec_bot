@@ -2,9 +2,6 @@ import os
 import shelve
 from functools import wraps
 
-from user import Language, Roles
-from view import Image, Keyboard, Button, Text
-
 class Storage():
     _FOLDER = 'data_storage'
     _FILENAME: str
@@ -48,18 +45,15 @@ class Storage():
 
 class StorageUsers(Storage):
     _FILENAME = 'data_users'
-    _default_structure = {'users': dict,  'admins': list, 'god': int}
+    _default_structure = {'users': dict, 'admins': set}
 
     @Storage._file_access()
-    def get_user(self, db, user_id):
-        user_data = db['users'].get(user_id)
-        if user_data is None:
-            raise KeyError(f'User with this ID {user_id} not found')
-        return user_data
+    def get_user(self, db, id):
+        return db['users'].get(id)
 
     @Storage._file_access(writeback=True)
-    def save_user(self, db, user_obj):
-        db['users'][user_obj.user_id] = user_obj
+    def save_user(self, db, id, lang, role):
+        db['users'][id] = {'lang': lang, 'role': role}
 
     @Storage._file_access(writeback=True)
     def del_user(self, db, user_id):
@@ -68,8 +62,8 @@ class StorageUsers(Storage):
             raise KeyError(f'User with this ID {user_id} not found')
 
     @Storage._file_access()
-    def is_admin(self, db, user_id):
-        return user_id in db['admins']
+    def get_admins(self, db):
+        return db['admins']
 
 
 class StorageContent(Storage):
@@ -81,7 +75,14 @@ class StorageContent(Storage):
         'buttons': dict
     }
 
-    def initialize(self):
+    # def __init__(self):
+    #     super().__init__()
+    #     self.views = None
+    #     self.texts = None
+    #     self.images = None
+    #     self.buttons = None
+
+    def lazy_init(self):
         self.views = StorageViews()
         self.texts = StorageTexts()
         self.images = StorageImages()
@@ -138,6 +139,7 @@ class StorageImages(StorageContent):
 class StorageButtons(StorageContent):
     @Storage._file_access()
     def get(self, db, name, lang):
+        print(142, name, lang)
         label = db['buttons'][name]['label'][lang]
         to_view = db['buttons'][name]['to_view']
         return label, to_view
@@ -152,3 +154,11 @@ class StorageButtons(StorageContent):
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
         del db['buttons'][name]
+
+
+if __name__ == '__main__':
+    stg_content = StorageContent()
+    stg_content.lazy_init()
+
+    with shelve.open(stg_content._file_path) as db:
+        print(db['buttons'])

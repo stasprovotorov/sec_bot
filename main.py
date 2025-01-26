@@ -1,10 +1,10 @@
 from dotenv import dotenv_values
 from storage import StorageUsers, StorageContent
-from user import User, Language
+from user import User
 from telebot import TeleBot, types, custom_filters
 from telebot.handler_backends import State, StatesGroup
 from telebot.storage import StateMemoryStorage
-from view import Text, Image, View
+from view import View
 
 from editor import Editor, StatesButton, StatesText
 from editor_data import editor_msg, editor_btn
@@ -18,18 +18,17 @@ bot.add_custom_filter(custom_filters.StateFilter(bot))
 
 stg_users = StorageUsers()
 stg_content = StorageContent()
+stg_content.lazy_init()
 vw = View(bot, stg_content)
 
 editor = Editor()
 
+
 @bot.message_handler(commands=['start'])
 def start(message):
-    content_key = message.text.lstrip('/')
-    user = User(stg_users, message.from_user.id, message.from_user.language_code)
-    # user.switch_lang()
-    is_admin = stg_users.is_admin(user.user_id)
-    # is_admin = not stg_users.is_admin(user.user_id)
-    vw.send(message.chat.id, content_key, user.lang, is_admin)
+    user = User(stg_users, message.from_user.id+1, message.from_user.language_code)
+    view = message.text.lstrip('/')
+    vw.send(message.chat.id, view, user.lang, user.role)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'editor_menu')
