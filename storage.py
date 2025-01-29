@@ -69,10 +69,10 @@ class StorageUsers(Storage):
 class StorageContent(Storage):
     _FILENAME = 'data_content'
     _default_structure = {
-        'views': dict,
-        'texts': dict,
-        'images': dict,
-        'buttons': dict
+        'view': dict,
+        'text': dict,
+        'image': dict,
+        'button': dict
     }
 
     # def __init__(self):
@@ -83,82 +83,104 @@ class StorageContent(Storage):
     #     self.buttons = None
 
     def lazy_init(self):
-        self.views = StorageViews()
-        self.texts = StorageTexts()
-        self.images = StorageImages()
-        self.buttons = StorageButtons()
+        self.view = StorageViews()
+        self.text = StorageTexts()
+        self.image = StorageImages()
+        self.button = StorageButtons()
 
 
 class StorageViews(StorageContent):
+    PROTECTED_VIEWS = ['start']
+
     @Storage._file_access()
-    def get(self, db, view):
-        return db['views'][view]
+    def get(self, db, view_name):
+        view_content_map = db['view'][view_name]
+        view_data = {}
+
+        for content_type, content_name in view_content_map.items():
+            if content_type == 'button':
+                view_data[content_type] = {
+                    button_name: db[content_type].get(button_name) for button_name in content_name
+                }
+            else:
+                view_data[content_type] = db[content_type].get(content_name)
+
+        for content_type in db:
+            if content_type != 'view' and content_type not in view_data:
+                view_data.setdefault(content_type, None)
+
+        return view_data
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, text, buttons, image=None):
-        db['views'].setdefault(name, {})
-        db['views'][name]['text'] = text
-        db['views'][name]['buttons'] = buttons
-        db['views'][name]['image'] = image
+        db['view'].setdefault(name, {})
+        db['view'][name]['text'] = text
+        db['view'][name]['button'] = buttons
+        db['view'][name]['image'] = image
 
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
-        del db['views'][name]
+        del db['view'][name]
 
 
 class StorageTexts(StorageContent):
+    PROTECTED_TEXTS = ('welcome')
+
     @Storage._file_access()
     def get(self, db, name, lang):
-        return db['texts'][name][lang]
+        return db['text'][name][lang]
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, text_ru, text_en):
-        db['texts'].setdefault(name, {})
-        db['texts'][name]['ru'] = text_ru
-        db['texts'][name]['en'] = text_en
+        db['text'].setdefault(name, {})
+        db['text'][name]['ru'] = text_ru
+        db['text'][name]['en'] = text_en
 
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
-        del db['texts'][name]
+        if name not in self.PROTECTED_TEXTS:
+            del db['text'][name]
 
 
 class StorageImages(StorageContent):
     @Storage._file_access()
     def get(self, db, name):
-        return db['images'][name]
+        return db['image'][name]
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, image):
-        db['images'][name] = image
+        db['image'][name] = image
 
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
-        del db['images'][name]
+        del db['image'][name]
 
 
 class StorageButtons(StorageContent):
+    PROTECTED_BUTTONS = ('editor', 'menu')
+
     @Storage._file_access()
     def get(self, db, name, lang):
-        print(142, name, lang)
-        label = db['buttons'][name]['label'][lang]
-        to_view = db['buttons'][name]['to_view']
+        label = db['button'][name]['label'][lang]
+        to_view = db['button'][name]['to_view']
         return label, to_view
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, label_ru, label_en, to_view):
-        db['buttons'][name] = {
+        db['button'][name] = {
             'label': {'ru': label_ru, 'en': label_en},
             'to_view': to_view
         }
 
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
-        del db['buttons'][name]
+        if name not in self.PROTECTED_BUTTONS:
+            del db['button'][name]
 
 
 if __name__ == '__main__':
     stg_content = StorageContent()
     stg_content.lazy_init()
 
-    with shelve.open(stg_content._file_path) as db:
-        print(db['buttons'])
+    with shelve.open(stg_content._file_path, writeback=True) as db:
+        del db['view']['start']['image']

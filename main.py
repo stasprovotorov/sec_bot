@@ -26,7 +26,7 @@ editor = Editor()
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    user = User(stg_users, message.from_user.id+1, message.from_user.language_code)
+    user = User(stg_users, message.from_user.id, message.from_user.language_code)
     view = message.text.lstrip('/')
     vw.send(message.chat.id, view, user.lang, user.role)
 
@@ -95,11 +95,9 @@ def confirmation(call):
 
 @bot.callback_query_handler(func=lambda call: call.data != 'create_button')
 def buttons_callback(call):
-    content_key = call.data
-    user = User(stg_users, call.message.from_user.id, call.message.from_user.language_code)
-    is_admin = stg_users.is_admin(user.user_id)
-    # is_admin = not stg_users.is_admin(user.user_id)
-    vw.send(call.message.chat.id, content_key, user.lang, is_admin)
+    view = call.data
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+    vw.send(call.message.chat.id, view, user.lang)
 
 
 bot.polling(none_stop=True)
