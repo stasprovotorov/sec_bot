@@ -13,7 +13,5 @@ class User:
             stg_users.save_user(self.id, self.lang, self.role)
 
     def _determine_role(self, stg_users):
-        result = 'admin' if self.id in stg_users.get_admins() else 'basic'
-        print(15, result)
-        return result
+        return 'admin' if self.id in stg_users.get_admins() else 'basic'
     
