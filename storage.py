@@ -176,11 +176,3 @@ class StorageButtons(StorageContent):
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
-
-
-if __name__ == '__main__':
-    stg_content = StorageContent()
-    stg_content.lazy_init()
-
-    with shelve.open(stg_content._file_path, writeback=True) as db:
-        del db['view']['start']['image']

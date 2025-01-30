@@ -5,7 +5,7 @@ class View:
         self.bot = bot
         self.stg_content = stg_content
 
-    def send(self, chat_id, view_name, lang):
+    def send(self, chat_id, view_name, lang, role=None):
         view_data = self.stg_content.view.get(view_name)
 
         text = view_data['text'][lang]
@@ -19,6 +19,10 @@ class View:
                         callback_data=button_data['to_view']
                     )
                 )
+
+        if view_name == 'start' and role == 'admin':
+            label, to_view = self.stg_content.button.get('editor', lang)
+            keyboard.add(types.InlineKeyboardButton(text=label, callback_data=to_view))
 
         image = view_data['image']
 

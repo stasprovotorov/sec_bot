@@ -28,7 +28,7 @@ editor = Editor()
 def start(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
     view = message.text.lstrip('/')
-    vw.send(message.chat.id, view, user.lang, user.role)
+    vw.send(message.chat.id, view, user.lang, 'basic')
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'editor_menu')
