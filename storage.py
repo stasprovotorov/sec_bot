@@ -176,3 +176,10 @@ class StorageButtons(StorageContent):
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
+
+
+if __name__ == '__main__':
+    stg_users = StorageUsers()
+
+    user = stg_users.get_user(171025409)
+    print(user)

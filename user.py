@@ -12,6 +12,9 @@ class User:
             self.role = self._determine_role(stg_users)
             stg_users.save_user(self.id, self.lang, self.role)
 
+        if self.role == 'admin':
+            self.state = None
+
     def _determine_role(self, stg_users):
         return 'admin' if self.id in stg_users.get_admins() else 'basic'
     
