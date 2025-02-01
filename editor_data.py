@@ -96,3 +96,13 @@ editor_btn = {
         }
     }
 }
+
+user_states = {
+    'text': {
+        'new_text': {
+            'text_sys_name',
+            'text_ru',
+            'text_en'
+        }
+    }
+}
