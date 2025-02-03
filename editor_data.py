@@ -4,20 +4,24 @@ editor_msg = {
         'en': 'What would you like to edit?'
     },
     'edit_txt_menu': {
-        'ru': 'Что ты желаешь сделать с текстом?',
-        'en': 'What do you want to do with the text?'
+                'ru': 'Что ты желаешь сделать с текстом?',
+                'en': 'What do you want to do with the text?'
     },
-    'text_sys_name': {
-        'ru': 'Введите системное имя для текста',
-        'en': 'Enter a system name for the text'
-    },
-    'text_ru': {
-        'ru': 'Введите текст на русском языке',
-        'en': 'Enter text in Russian'
-    },
-    'text_en': {
-        'ru': 'Введите тескт на английском языке',
-        'en': 'Enter text in English'
+    'text': {
+        'new': {
+            'text_sys_name': {
+                'ru': 'Введите системное имя для текста',
+                'en': 'Enter a system name for the text'
+            },            
+            'text_ru': {
+                'ru': 'Введите текст на русском языке',
+                'en': 'Enter text in Russian'
+            },
+            'text_en': {
+                'ru': 'Введите тескт на английском языке',
+                'en': 'Enter text in English'
+            }
+        }
     },
     'confirmation': {
         'ru': 'Подтвердите данные',
@@ -62,7 +66,7 @@ editor_btn = {
                 'ru': 'Новый текст',
                 'en': 'New text'
             },
-            'cnt_next': 'text_sys_name'
+            'cnt_next': 'state:text:new'
         },
         'edit_text': {
             'label': {
@@ -97,12 +101,12 @@ editor_btn = {
     }
 }
 
-user_states = {
+editor_states = {
     'text': {
-        'new_text': {
+        'new_text': (
             'text_sys_name',
             'text_ru',
             'text_en'
-        }
+        )
     }
 }

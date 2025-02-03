@@ -2,11 +2,10 @@ from dotenv import dotenv_values
 from storage import StorageUsers, StorageContent
 from user import User
 from telebot import TeleBot, types, custom_filters
-from telebot.handler_backends import State, StatesGroup
 from telebot.storage import StateMemoryStorage
 from view import View
 
-from editor import Editor, StatesButton, StatesText
+from editor import Editor
 from editor_data import editor_msg, editor_btn
 
 config = dotenv_values('tg_bot_token.env')
@@ -28,7 +27,7 @@ editor = Editor()
 def start(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
     view = message.text.lstrip('/')
-    vw.send(message.chat.id, view, user.lang, 'basic')
+    vw.send(message.chat.id, view, user.lang, user.role)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'editor_menu')
@@ -66,21 +65,36 @@ def edit_txt_menu(call):
     bot.send_message(call.message.chat.id, msg, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data == 'text_sys_name')
-def new_txt(call):
-    msg = editor_msg[call.data][call.from_user.language_code]
-    bot.set_state(call.from_user.id, StatesText.text_ru, call.message.chat.id)
-    bot.send_message(call.from_user.id, msg)
+@bot.callback_query_handler(func=lambda call: call.data.startswith('state'))
+def start_editor_dialog(call):
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+
+    _, state_category, state_group = call.data.split(':')
+    states_iter = editor.states[state_category][state_group].get_states_iter()
+    editor.set_user_states(user.id, states_iter)
+    user_state = editor.get_next_user_state(user.id)
+    bot.set_state(user.id, user_state)
+
+    _, state_name = bot.get_state(user.id).split(':')
+    msg = editor_msg[state_category][state_group][state_name][user.lang]
+    bot.send_message(user.id, msg)
 
 
-@bot.message_handler(state=StatesText.get_states_obj(), content_types=['text'])
-def new_txt_dialog(message):
+@bot.message_handler(state=editor.states['text']['new'].get_states_list(), content_types=['text'])
+def editor_dialog_provider(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
-    user.lang = 'en' # fix it
-    user_state = bot.get_state(message.from_user.id)
-    chat_id = message.chat.id
+
     user_input = message.text
-    editor.dialog_provider(bot, user, user_state, chat_id, user_input)
+    user_state = bot.get_state(user.id)
+
+    editor.dialog_data[user_state] = user_input
+    
+    user_state = editor.get_next_user_state(user.id)
+    bot.set_state(user.id, user_state)
+
+    _, state_name = bot.get_state(user.id).split(':')
+    msg = editor_msg['text']['new'][state_name][user.lang]
+    bot.send_message(user.id, msg)
 
 
 @bot.callback_query_handler(func=lambda call: call.data in ['confirm', 'cancel'])
