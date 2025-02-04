@@ -53,3 +53,6 @@ class Editor(StatesEditor):
 
     def get_next_user_state(self, user_id):
         return next(self.user_states[user_id])
+
+    def save_user_input(self, user_state, user_input):
+        self.dialog_data[user_state] = user_input

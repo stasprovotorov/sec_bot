@@ -87,7 +87,7 @@ def editor_dialog_provider(message):
     user_input = message.text
     user_state = bot.get_state(user.id)
 
-    editor.dialog_data[user_state] = user_input
+    editor.save_user_input(user_state, user_input)
     
     try:
         user_state = editor.get_next_user_state(user.id)
