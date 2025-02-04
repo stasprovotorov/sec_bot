@@ -89,12 +89,31 @@ def editor_dialog_provider(message):
 
     editor.dialog_data[user_state] = user_input
     
-    user_state = editor.get_next_user_state(user.id)
-    bot.set_state(user.id, user_state)
+    try:
+        user_state = editor.get_next_user_state(user.id)
+        bot.set_state(user.id, user_state)
 
-    _, state_name = bot.get_state(user.id).split(':')
-    msg = editor_msg['text']['new'][state_name][user.lang]
-    bot.send_message(user.id, msg)
+        _, state_name = bot.get_state(user.id).split(':')
+        msg = editor_msg['text']['new'][state_name][user.lang]
+        bot.send_message(user.id, msg)
+
+    except StopIteration:
+        bot.delete_state(user.id)
+
+        msg = editor_msg['confirmation'][user.lang]
+
+        keyboard = types.InlineKeyboardMarkup()
+        buttons = []
+        for button_name in editor_btn['confirmation']:
+            buttons.append(
+                types.InlineKeyboardButton(
+                    text=editor_btn['confirmation'][button_name]['label'][user.lang],
+                    callback_data=editor_btn['confirmation'][button_name]['cnt_next']
+                )
+            )
+        keyboard.row(*buttons)
+
+        bot.send_message(user.id, msg, reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data in ['confirm', 'cancel'])
