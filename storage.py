@@ -179,7 +179,8 @@ class StorageButtons(StorageContent):
 
 
 if __name__ == '__main__':
-    stg_users = StorageUsers()
+    stg_content = StorageContent()
+    stg_content.lazy_init()
 
-    user = stg_users.get_user(171025409)
-    print(user)
+    with shelve.open(stg_content._file_path) as db:
+        print(db['text'])

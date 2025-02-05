@@ -6,7 +6,7 @@ from telebot.storage import StateMemoryStorage
 from view import View
 
 from editor import Editor
-from editor_data import editor_msg, editor_btn
+from editor_data import editor_msg, editor_btn, state_group_to_content_type
 
 config = dotenv_values('tg_bot_token.env')
 TOKEN = config['TOKEN']
@@ -80,18 +80,20 @@ def start_editor_dialog(call):
     bot.send_message(user.id, msg)
 
 
-@bot.message_handler(state=editor.states['text']['new'].get_states_list(), content_types=['text'])
+@bot.message_handler(state=editor.get_all_states(), content_types=['text'])
 def editor_dialog_provider(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
 
-    user_input = message.text
-    user_state = bot.get_state(user.id)
-
-    editor.save_user_input(user_state, user_input)
+    editor.save_user_input(
+        user_state=bot.get_state(user.id), 
+        user_input=message.text
+    )
     
     try:
-        user_state = editor.get_next_user_state(user.id)
-        bot.set_state(user.id, user_state)
+        bot.set_state(
+            user_id=user.id, 
+            state=editor.get_next_user_state(user.id)
+        )
 
         _, state_name = bot.get_state(user.id).split(':')
         msg = editor_msg['text']['new'][state_name][user.lang]
@@ -118,12 +120,37 @@ def editor_dialog_provider(message):
 
 @bot.callback_query_handler(func=lambda call: call.data in ['confirm', 'cancel'])
 def confirmation(call):
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+
     if call.data == 'confirm':
-        content_type ='text' if editor.dialog_data.keys()[0].split(':')[0] == 'StatesText' else None
-        print(content_type)
+        get_state_group = lambda state: state.split(':')[0]
+        state_group = list(map(get_state_group, editor.dialog_data.keys()))[0]
+        content_type = state_group_to_content_type[state_group]
+
+        if content_type == 'text':
+            for state, user_input in editor.dialog_data.items():
+                _, state_name = state.split(':')
+
+                if state_name == 'text_sys_name':
+                    text_sys_name = user_input
+                elif state_name == 'text_ru':
+                    text_ru = user_input
+                elif state_name == 'text_en':
+                    text_en = user_input
+
+            stg_content.text.save(text_sys_name, text_ru, text_en)
+
+            bot.send_message(user.id, f'Text {text_sys_name} was successfully saved!')
+
+        elif content_type == 'image':
+            pass
+        elif content_type == 'button':
+            pass
+        elif content_type == 'view':
+            pass
+    
     elif call.data == 'cancel':
-        editor.dialog_data.clear()
-    print(editor.dialog_data)
+        pass
 
 
 @bot.callback_query_handler(func=lambda call: call.data != 'create_button')

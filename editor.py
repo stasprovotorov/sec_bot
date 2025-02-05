@@ -26,11 +26,56 @@ class StatesTextNew(StatesBase):
 
 
 class StatesTextEdit(StatesBase):
-    pass
+    text_choose_sys_name = State()
+    text_choose_lang = State()
+    text_enter = State()
 
 
 class StatesTextDelete(StatesBase):
+    text_choose_sys_name = State()
+
+
+class StatesImageNew(StatesBase):
+    image_sys_name = State()
+    image_enter = State()
+
+
+class StatesImageDelete(StatesBase):
+    image_choose_sys_name = State()
+
+
+class StatesButtonNew(StatesBase):
+    button_sys_name = State()
+    button_label_ru = State()
+    button_label_en = State()
+    button_action = State()
+
+
+# As example. Should be refactored in future
+class StatesButtonEdit(StatesBase):
+    button_choose_sys_name = State()
+    button_choose_component = State()
+    button_edit_component = State()
+
+
+class StatesButtonDelete(StatesBase):
+    button_choose_sys_name = State()
+
+
+class StatesViewNew(StatesBase):
+    view_sys_name = State()
+    view_choose_text = State()
+    view_choose_image = State()
+    view_choose_button = State()
+
+
+# To think about. Not added to StatesEditor.states
+class StatesViewEdit(StatesBase):
     pass
+
+
+class StatesViewDelete(StatesBase):
+    view_choose_sys_name = State()
 
 
 class StatesEditor:
@@ -39,9 +84,32 @@ class StatesEditor:
             'new': StatesTextNew,
             'edit': StatesTextEdit,
             'delete': StatesTextDelete
+        },
+        'image': {
+            'new': StatesImageNew,
+            'delete': StatesImageDelete
+        },
+        'button': {
+            'new': StatesButtonNew,
+            'edit': StatesButtonEdit,
+            'delete': StatesButtonDelete
+        },
+        'view': {
+            'new': StatesButtonNew,
+            'delete': StatesButtonDelete
         }
     }
 
+    @classmethod
+    def get_all_states(cls):
+        all_states = []
+
+        for state_category in cls.states.values():
+            for state_group in state_category.values():
+                all_states.extend(state_group.get_states_list())
+                
+        return all_states
+    
 
 class Editor(StatesEditor):
     def __init__(self):
@@ -56,3 +124,11 @@ class Editor(StatesEditor):
 
     def save_user_input(self, user_state, user_input):
         self.dialog_data[user_state] = user_input
+
+
+if __name__ == '__main__':
+    editor = Editor()
+
+    all_states = editor.get_all_states()
+
+    print(*all_states, sep='\n')

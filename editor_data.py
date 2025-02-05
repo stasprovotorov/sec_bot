@@ -110,3 +110,26 @@ editor_states = {
         )
     }
 }
+
+# Mapping state_groups to the content_types from data_content.db file structure
+state_groups_text = ('StatesTextNew', 'StatesTextEdit', 'StatesTextDelete')
+state_groups_image = ('StatesImageNew', 'StatesImageDelete')
+state_groups_button = ('StatesButtonNew', 'StatesButtonEdit', 'StatesButtonDelete')
+state_groups_view = ('StatesViewNew', 'StatesViewDelete')
+
+state_groups_all = (
+    state_groups_text, 
+    state_groups_image, 
+    state_groups_button, 
+    state_groups_view
+)
+
+content_types = ('text', 'image', 'button', 'view')
+
+state_group_to_content_type = {}
+for content_type, state_group in zip(content_types, state_groups_all):
+    state_group_to_content_type.update(
+        dict.fromkeys(state_group, content_type)
+    )
+
+# Mepping 
