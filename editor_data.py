@@ -21,8 +21,22 @@ editor_msg = {
                 'ru': 'Введите тескт на английском языке',
                 'en': 'Enter text in English'
             }
+        },
+        'edit': {
+            'text_choose_sys_name': {
+                'ru': 'Выберите текст для редактирования',
+                'en': 'Select the text name for editing'
+            },
+            'text_choose_lang': {
+                'ru': 'Enter the edited text',
+                'en': 'Select the editing language'
+            },
+            'text_enter': {
+                'ru': 'Введите редактированный текст',
+                'en': 'Enter the edited text'
+            }
         }
-    },
+    },    
     'confirmation': {
         'ru': 'Подтвердите данные',
         'en': 'Confirm data'
@@ -73,7 +87,7 @@ editor_btn = {
                 'ru': 'Редактировать текст',
                 'en': 'Edit text'
             },
-            'cnt_next': 'edit_txt'
+            'cnt_next': 'state:text:edit'
         },
         'delete_text': {
             'label': {
@@ -131,5 +145,3 @@ for content_type, state_group in zip(content_types, state_groups_all):
     state_group_to_content_type.update(
         dict.fromkeys(state_group, content_type)
     )
-
-# Mepping 

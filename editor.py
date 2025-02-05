@@ -114,7 +114,7 @@ class StatesEditor:
 class Editor(StatesEditor):
     def __init__(self):
         self.user_states = {}
-        self.dialog_data = {}
+        self.user_responses = {}
 
     def set_user_states(self, user_id, state):
         self.user_states[user_id] = state
@@ -122,13 +122,39 @@ class Editor(StatesEditor):
     def get_next_user_state(self, user_id):
         return next(self.user_states[user_id])
 
-    def save_user_input(self, user_state, user_input):
-        self.dialog_data[user_state] = user_input
+    def collect_user_responses(self, user_id, user_state, user_input):
+        content_type, action, state_name = self.state_parser(user_state)
+
+        if user_id not in self.user_responses:
+            self.user_responses[user_id] = {
+                'content_type': content_type,
+                'action': action,
+                'user_input': {}
+            }
+        
+        self.user_responses[user_id]['user_input'][state_name] = user_input
+
+    def state_parser(self, state):
+        state_group, state_name = state.split(':')
+
+        index_left = 0
+        separated_words = []
+
+        for i, symbol in enumerate(state_group):
+            if i > 0 and symbol.isupper():
+                separated_words.append(state_group[index_left:i])
+                index_left = i
+        separated_words.append(state_group[index_left:])
+
+        _, content_type, action = separated_words
+
+        return content_type.lower(), action.lower(), state_name
 
 
 if __name__ == '__main__':
     editor = Editor()
 
-    all_states = editor.get_all_states()
+    state = StatesTextNew.text_sys_name.name
 
-    print(*all_states, sep='\n')
+    parsed_state = editor.state_parser(state)
+    print(parsed_state)

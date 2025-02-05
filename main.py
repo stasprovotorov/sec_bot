@@ -84,19 +84,19 @@ def start_editor_dialog(call):
 def editor_dialog_provider(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
 
-    editor.save_user_input(
+    editor.collect_user_responses(
+        user_id=user.id,
         user_state=bot.get_state(user.id), 
         user_input=message.text
     )
     
     try:
-        bot.set_state(
-            user_id=user.id, 
-            state=editor.get_next_user_state(user.id)
-        )
+        state = editor.get_next_user_state(user.id)
 
-        _, state_name = bot.get_state(user.id).split(':')
-        msg = editor_msg['text']['new'][state_name][user.lang]
+        bot.set_state(user.id, state)
+
+        content_type, action, state_name = editor.state_parser(state)
+        msg = editor_msg[content_type][action][state_name][user.lang]
         bot.send_message(user.id, msg)
 
     except StopIteration:
@@ -123,32 +123,7 @@ def confirmation(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
 
     if call.data == 'confirm':
-        get_state_group = lambda state: state.split(':')[0]
-        state_group = list(map(get_state_group, editor.dialog_data.keys()))[0]
-        content_type = state_group_to_content_type[state_group]
-
-        if content_type == 'text':
-            for state, user_input in editor.dialog_data.items():
-                _, state_name = state.split(':')
-
-                if state_name == 'text_sys_name':
-                    text_sys_name = user_input
-                elif state_name == 'text_ru':
-                    text_ru = user_input
-                elif state_name == 'text_en':
-                    text_en = user_input
-
-            stg_content.text.save(text_sys_name, text_ru, text_en)
-
-            bot.send_message(user.id, f'Text {text_sys_name} was successfully saved!')
-
-        elif content_type == 'image':
-            pass
-        elif content_type == 'button':
-            pass
-        elif content_type == 'view':
-            pass
-    
+        print(editor.user_responses[user.id])
     elif call.data == 'cancel':
         pass
 
