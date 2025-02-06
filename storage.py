@@ -156,6 +156,10 @@ class StorageImages(StorageContent):
     @Storage._file_access()
     def get(self, db, name):
         return db['image'][name]
+    
+    @Storage._file_access()
+    def get_all_image_names(self, db):
+        return db['image'].keys()
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, image):

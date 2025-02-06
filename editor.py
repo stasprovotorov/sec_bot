@@ -120,7 +120,8 @@ class Editor(StatesEditor):
 
         self._state_to_storage_method = {
             'push_text_name': self.stg_content.text.get_all_text_names,
-            'push_text_lang': lambda: ['ru', 'en']
+            'push_text_lang': lambda: ['ru', 'en'],
+            'push_image_name': self.stg_content.image.get_all_image_names
         }
 
     def set_user_states(self, user_id, state):
@@ -142,6 +143,8 @@ class Editor(StatesEditor):
         self.user_responses[user_id]['user_responses'][state_name] = user_input
 
     def commit_user_responses(self, content_type, action, user_responses):
+        print(content_type, action, user_responses)
+
         if content_type == 'text':
             if action == 'new':
                 self.stg_content.text.save(
@@ -177,7 +180,9 @@ class Editor(StatesEditor):
                 )
 
             elif action == 'delete':
-                pass
+                self.stg_content.image.delete(
+                    name=user_responses['push_image_name']
+                )
 
         elif content_type == 'button':
             pass

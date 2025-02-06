@@ -57,6 +57,12 @@ editor_msg = {
                 'ru': 'Зыгрузите изображение',
                 'en': 'Upload image'
             }
+        },
+        'delete': {
+            'push_image_name': {
+                'ru': 'Выберите имя изображения для удаления',
+                'en': 'Select image name for deleting'
+            }
         }
     },
     'confirmation': {
