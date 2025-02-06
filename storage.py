@@ -32,7 +32,7 @@ class Storage():
             def wrapper(obj, *args, **kwargs):
                 try:
                     with shelve.open(obj._file_path, writeback=writeback) as db:
-                        return func(obj, db, *args, **kwargs)
+                        return func(obj, db, *args, **kwargs) 
                 except FileNotFoundError as e:
                     raise RuntimeError(f'The file {obj._file_path} was not found') from e
                 except PermissionError as e:
@@ -130,11 +130,21 @@ class StorageTexts(StorageContent):
     def get(self, db, name, lang):
         return db['text'][name][lang]
 
+    @Storage._file_access()
+    def get_all_text_names(self, db):
+        return db['text'].keys()
+
     @Storage._file_access(writeback=True)
-    def save(self, db, name, text_ru, text_en):
+    def save(self, db, name, text_ru=None, text_en=None):
         db['text'].setdefault(name, {})
-        db['text'][name]['ru'] = text_ru
-        db['text'][name]['en'] = text_en
+
+        if text_ru and text_en:
+            db['text'][name]['ru'] = text_ru
+            db['text'][name]['en'] = text_en
+        elif text_ru:
+            db['text'][name]['ru'] = text_ru
+        elif text_en:
+            db['text'][name]['en'] = text_en
 
     @Storage._file_access(writeback=True)
     def delete(self, db, name):
@@ -164,6 +174,10 @@ class StorageButtons(StorageContent):
         label = db['button'][name]['label'][lang]
         to_view = db['button'][name]['to_view']
         return label, to_view
+    
+    @Storage._file_access()
+    def get_all_button_names(self, db):
+        return db['button'].keys()
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, label_ru, label_en, to_view):
@@ -183,4 +197,5 @@ if __name__ == '__main__':
     stg_content.lazy_init()
 
     with shelve.open(stg_content._file_path) as db:
-        print(db['text']['TextName'])
+        print(db['text']['Pasha'])
+        

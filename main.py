@@ -76,9 +76,12 @@ def start_editor_dialog(call):
     user_state = editor.get_next_user_state(user.id)
     bot.set_state(user.id, user_state)
 
-    _, state_name = bot.get_state(user.id).split(':')
+    _, _, state_name = editor.state_parser(user_state)
+
     msg = editor_msg[state_category][state_group][state_name][user.lang]
-    bot.send_message(user.id, msg)
+    keyboard = editor.state_to_keyboard(state_name)
+
+    bot.send_message(user.id, msg, reply_markup=keyboard)
 
 
 @bot.message_handler(state=editor.get_all_states(), content_types=['text'])
@@ -97,13 +100,16 @@ def editor_dialog_provider(message):
         bot.set_state(user.id, state)
 
         content_type, action, state_name = editor.state_parser(state)
+
+        keyboard = editor.state_to_keyboard(state_name)
         msg = editor_msg[content_type][action][state_name][user.lang]
-        bot.send_message(user.id, msg)
+
+        bot.send_message(user.id, msg, reply_markup=keyboard)
 
     except StopIteration:
         bot.delete_state(user.id)
 
-        msg = editor_msg['confirmation'][user.lang]
+        msg = editor_msg['confirmation']['confirm_request'][user.lang]
 
         keyboard = types.InlineKeyboardMarkup()
         buttons = []
@@ -129,9 +135,17 @@ def confirmation(call):
             action=editor.user_responses[user.id]['action'],
             user_responses=editor.user_responses[user.id]['user_responses']
         )
-        
+
+        editor.user_responses[user.id].clear()
+
+        msg = editor_msg['confirmation']['confirm_response']['approved'][user.lang]
+        bot.send_message(user.id, msg)
+
     elif call.data == 'cancel':
-        pass
+        editor.user_responses[user.id].clear()
+
+        msg = editor_msg['confirmation']['confirm_response']['canceled'][user.lang]
+        bot.send_message(user.id, msg)
 
 
 @bot.callback_query_handler(func=lambda call: call.data != 'create_button')

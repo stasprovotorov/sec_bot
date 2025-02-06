@@ -9,37 +9,49 @@ editor_msg = {
     },
     'text': {
         'new': {
-            'text_sys_name': {
+            'enter_text_name': {
                 'ru': 'Введите системное имя для текста',
                 'en': 'Enter a system name for the text'
             },            
-            'text_ru': {
+            'enter_text_ru': {
                 'ru': 'Введите текст на русском языке',
                 'en': 'Enter text in Russian'
             },
-            'text_en': {
+            'enter_text_en': {
                 'ru': 'Введите тескт на английском языке',
                 'en': 'Enter text in English'
             }
         },
         'edit': {
-            'text_choose_sys_name': {
+            'push_text_name': {
                 'ru': 'Выберите текст для редактирования',
                 'en': 'Select the text name for editing'
             },
-            'text_choose_lang': {
-                'ru': 'Enter the edited text',
+            'push_text_lang': {
+                'ru': 'Выберите язык редактирования',
                 'en': 'Select the editing language'
             },
-            'text_enter': {
+            'enter_edited_text': {
                 'ru': 'Введите редактированный текст',
                 'en': 'Enter the edited text'
             }
         }
     },    
     'confirmation': {
-        'ru': 'Подтвердите данные',
-        'en': 'Confirm data'
+        'confirm_request': {
+            'ru': 'Подтвердите данные',
+            'en': 'Confirm data'
+        },
+        'confirm_response': {
+            'approved': {
+                'ru': 'Данные сохранены',
+                'en': 'Data saved' 
+            },
+            'canceled': {
+                'ru': 'Данные удалены',
+                'en': 'Data saving canceled'
+            }
+        }
     }
 }
 

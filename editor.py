@@ -20,15 +20,15 @@ class StatesBase(StatesGroup):
 
 
 class StatesTextNew(StatesBase):
-    text_sys_name = State()
-    text_ru = State()
-    text_en = State()
+    enter_text_name = State()
+    enter_text_ru = State()
+    enter_text_en = State()
 
 
 class StatesTextEdit(StatesBase):
-    text_choose_sys_name = State()
-    text_choose_lang = State()
-    text_enter = State()
+    push_text_name = State()
+    push_text_lang = State()
+    enter_edited_text = State()
 
 
 class StatesTextDelete(StatesBase):
@@ -112,10 +112,16 @@ class StatesEditor:
     
 
 class Editor(StatesEditor):
+
     def __init__(self, stg_content):
         self.stg_content = stg_content
         self.user_states = {}
         self.user_responses = {}
+
+        self._state_to_storage_method = {
+            'push_text_name': self.stg_content.text.get_all_text_names,
+            'push_text_lang': lambda: ['ru', 'en']
+        }
 
     def set_user_states(self, user_id, state):
         self.user_states[user_id] = state
@@ -139,13 +145,25 @@ class Editor(StatesEditor):
         if content_type == 'text':
             if action == 'new':
                 self.stg_content.text.save(
-                    name=user_responses['text_sys_name'],
-                    text_ru=user_responses['text_ru'],
-                    text_en=user_responses['text_en']
+                    name=user_responses['enter_text_name'],
+                    text_ru=user_responses['enter_text_ru'],
+                    text_en=user_responses['enter_text_en']
                 )
 
             elif action == 'edit':
-                pass
+                lang = user_responses['push_text_lang']
+
+                if lang == 'ru':
+                    self.stg_content.text.save(
+                        name=user_responses['push_text_name'],
+                        text_ru=user_responses['enter_edited_text'],
+                    )
+                elif lang == 'en':
+                    self.stg_content.text.save(
+                        name=user_responses['push_text_name'],
+                        text_en=user_responses['enter_edited_text'],
+                    )
+
             elif action == 'delete':
                 pass
 
@@ -157,6 +175,22 @@ class Editor(StatesEditor):
 
         elif content_type == 'view':
             pass
+
+    def state_to_keyboard(self, state_name):
+        if state_name not in self._state_to_storage_method:
+            return None
+        
+        button_labels = self._state_to_storage_method[state_name]()
+
+        keyboard = types.ReplyKeyboardMarkup(
+            resize_keyboard=True, 
+            one_time_keyboard=True
+        )
+
+        for button_label in button_labels:
+            keyboard.add(button_label)
+
+        return keyboard
 
     def state_parser(self, state):
         state_group, state_name = state.split(':')
