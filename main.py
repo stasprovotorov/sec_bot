@@ -18,9 +18,10 @@ bot.add_custom_filter(custom_filters.StateFilter(bot))
 stg_users = StorageUsers()
 stg_content = StorageContent()
 stg_content.lazy_init()
+
 vw = View(bot, stg_content)
 
-editor = Editor()
+editor = Editor(stg_content)
 
 
 @bot.message_handler(commands=['start'])
@@ -123,7 +124,12 @@ def confirmation(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
 
     if call.data == 'confirm':
-        print(editor.user_responses[user.id])
+        editor.commit_user_responses(
+            content_type=editor.user_responses[user.id]['content_type'],
+            action=editor.user_responses[user.id]['action'],
+            user_responses=editor.user_responses[user.id]['user_responses']
+        )
+        
     elif call.data == 'cancel':
         pass
 

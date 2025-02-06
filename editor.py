@@ -112,7 +112,8 @@ class StatesEditor:
     
 
 class Editor(StatesEditor):
-    def __init__(self):
+    def __init__(self, stg_content):
+        self.stg_content = stg_content
         self.user_states = {}
         self.user_responses = {}
 
@@ -129,10 +130,33 @@ class Editor(StatesEditor):
             self.user_responses[user_id] = {
                 'content_type': content_type,
                 'action': action,
-                'user_input': {}
+                'user_responses': {}
             }
         
-        self.user_responses[user_id]['user_input'][state_name] = user_input
+        self.user_responses[user_id]['user_responses'][state_name] = user_input
+
+    def commit_user_responses(self, content_type, action, user_responses):
+        if content_type == 'text':
+            if action == 'new':
+                self.stg_content.text.save(
+                    name=user_responses['text_sys_name'],
+                    text_ru=user_responses['text_ru'],
+                    text_en=user_responses['text_en']
+                )
+
+            elif action == 'edit':
+                pass
+            elif action == 'delete':
+                pass
+
+        elif content_type == 'image':
+            pass
+
+        elif content_type == 'button':
+            pass
+
+        elif content_type == 'view':
+            pass
 
     def state_parser(self, state):
         state_group, state_name = state.split(':')
@@ -149,12 +173,3 @@ class Editor(StatesEditor):
         _, content_type, action = separated_words
 
         return content_type.lower(), action.lower(), state_name
-
-
-if __name__ == '__main__':
-    editor = Editor()
-
-    state = StatesTextNew.text_sys_name.name
-
-    parsed_state = editor.state_parser(state)
-    print(parsed_state)
