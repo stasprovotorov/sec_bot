@@ -197,5 +197,5 @@ if __name__ == '__main__':
     stg_content.lazy_init()
 
     with shelve.open(stg_content._file_path) as db:
-        print(db['text']['Pasha'])
+        print(db['image']['Cat'][:10])
         

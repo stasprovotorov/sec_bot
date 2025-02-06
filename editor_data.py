@@ -4,8 +4,12 @@ editor_msg = {
         'en': 'What would you like to edit?'
     },
     'edit_txt_menu': {
-                'ru': 'Что ты желаешь сделать с текстом?',
-                'en': 'What do you want to do with the text?'
+        'ru': 'Что ты желаешь сделать с текстом?',
+        'en': 'What do you want to do with the text?'
+    },
+    'edit_img_menu': {
+        'ru': 'Что ты желаешь сделать с изображением?',
+        'en': 'What do you want to do with the image?'
     },
     'text': {
         'new': {
@@ -43,6 +47,18 @@ editor_msg = {
             }
         }
     },
+    'image': {
+        'new': {
+            'enter_image_name': {
+                'ru': 'Введите системное имя для изображения',
+                'en': 'Enter a system name for the image'
+            },
+            'enter_image': {
+                'ru': 'Зыгрузите изображение',
+                'en': 'Upload image'
+            }
+        }
+    },
     'confirmation': {
         'confirm_request': {
             'ru': 'Подтвердите данные',
@@ -75,7 +91,7 @@ editor_btn = {
                 'ru': 'Изображения',
                 'en': 'Images'
             },
-            'cnt_next': 'edit_img'
+            'cnt_next': 'edit_img_menu'
         },
         'buttons': {
             'label': {
@@ -113,6 +129,22 @@ editor_btn = {
                 'en': 'Delete text'
             },
             'cnt_next': 'state:text:delete'
+        }
+    },
+    'edit_img_menu': {
+        'new_image': {
+            'label': {
+                'ru': 'Загрузить',
+                'en': 'Upload'
+            },
+            'cnt_next': 'state:image:new'
+        },
+        'delete_image': {
+            'label': {
+                'ru': 'Удалить',
+                'en': 'Delete'
+            },
+            'cnt_next': 'state:image:delete'
         }
     },
     'confirmation': {

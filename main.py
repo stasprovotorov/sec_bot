@@ -50,8 +50,8 @@ def editor_menu(call):
     bot.send_message(call.message.chat.id, msg, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data == 'edit_txt_menu')
-def edit_txt_menu(call):
+@bot.callback_query_handler(func=lambda call: call.data in ['edit_txt_menu', 'edit_img_menu'])
+def edit_content_type_menu(call):
     msg = editor_msg[call.data][call.from_user.language_code]
     keyboard = types.InlineKeyboardMarkup(row_width=3)
     btn_row = []
@@ -84,14 +84,24 @@ def start_editor_dialog(call):
     bot.send_message(user.id, msg, reply_markup=keyboard)
 
 
-@bot.message_handler(state=editor.get_all_states(), content_types=['text'])
+@bot.message_handler(state=editor.get_all_states(), content_types=['text', 'photo'])
 def editor_dialog_provider(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
+
+    if message.text:
+        user_input = message.text
+
+    elif message.photo:
+        image_id = message.photo[-1].file_id
+        image_info = bot.get_file(image_id)
+        image = bot.download_file(image_info.file_path)
+        
+        user_input = image
 
     editor.collect_user_responses(
         user_id=user.id,
         user_state=bot.get_state(user.id), 
-        user_input=message.text
+        user_input=user_input
     )
     
     try:
@@ -127,6 +137,8 @@ def editor_dialog_provider(message):
 @bot.callback_query_handler(func=lambda call: call.data in ['confirm', 'cancel'])
 def confirmation(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
+
+    print(editor.user_responses)
 
     if call.data == 'confirm':
         editor.commit_user_responses(

@@ -36,12 +36,12 @@ class StatesTextDelete(StatesBase):
 
 
 class StatesImageNew(StatesBase):
-    image_sys_name = State()
-    image_enter = State()
+    enter_image_name = State()
+    enter_image = State()
 
 
 class StatesImageDelete(StatesBase):
-    image_choose_sys_name = State()
+    push_image_name = State()
 
 
 class StatesButtonNew(StatesBase):
@@ -170,7 +170,14 @@ class Editor(StatesEditor):
                 )
 
         elif content_type == 'image':
-            pass
+            if action == 'new':
+                self.stg_content.image.save(
+                    name=user_responses['enter_image_name'],
+                    image=user_responses['enter_image']
+                )
+
+            elif action == 'delete':
+                pass
 
         elif content_type == 'button':
             pass
