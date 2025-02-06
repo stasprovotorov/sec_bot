@@ -32,7 +32,7 @@ class StatesTextEdit(StatesBase):
 
 
 class StatesTextDelete(StatesBase):
-    text_choose_sys_name = State()
+    push_text_name = State()
 
 
 class StatesImageNew(StatesBase):
@@ -165,7 +165,9 @@ class Editor(StatesEditor):
                     )
 
             elif action == 'delete':
-                pass
+                self.stg_content.text.delete(
+                    name=user_responses['push_text_name']
+                )
 
         elif content_type == 'image':
             pass
@@ -192,7 +194,7 @@ class Editor(StatesEditor):
 
         return keyboard
 
-    def delete_user_resposes(self, user_id):
+    def delete_user_responses(self, user_id):
         del self.user_responses[user_id]
 
     def state_parser(self, state):

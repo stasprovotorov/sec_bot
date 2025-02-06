@@ -35,8 +35,14 @@ editor_msg = {
                 'ru': 'Введите редактированный текст',
                 'en': 'Enter the edited text'
             }
+        },
+        'delete': {
+            'push_text_name': {
+                'ru': 'Выберите текст для удаления',
+                'en': 'Select the text name for deleting'
+            }
         }
-    },    
+    },
     'confirmation': {
         'confirm_request': {
             'ru': 'Подтвердите данные',
@@ -44,12 +50,12 @@ editor_msg = {
         },
         'confirm_response': {
             'approved': {
-                'ru': 'Данные сохранены',
-                'en': 'Data saved' 
+                'ru': 'Изменения сохранены',
+                'en': 'Changes saved' 
             },
             'canceled': {
-                'ru': 'Данные удалены',
-                'en': 'Data saving canceled'
+                'ru': 'Изменения отменены',
+                'en': 'Changes canceled'
             }
         }
     }
@@ -106,7 +112,7 @@ editor_btn = {
                 'ru': 'Удалить текст',
                 'en': 'Delete text'
             },
-            'cnt_next': 'del_txt'
+            'cnt_next': 'state:text:delete'
         }
     },
     'confirmation': {
