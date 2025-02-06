@@ -28,7 +28,7 @@ class StatesTextNew(StatesBase):
 class StatesTextEdit(StatesBase):
     push_text_name = State()
     push_text_lang = State()
-    enter_edited_text = State()
+    enter_text_edited = State()
 
 
 class StatesTextDelete(StatesBase):
@@ -156,12 +156,12 @@ class Editor(StatesEditor):
                 if lang == 'ru':
                     self.stg_content.text.save(
                         name=user_responses['push_text_name'],
-                        text_ru=user_responses['enter_edited_text'],
+                        text_ru=user_responses['enter_text_edited'],
                     )
                 elif lang == 'en':
                     self.stg_content.text.save(
                         name=user_responses['push_text_name'],
-                        text_en=user_responses['enter_edited_text'],
+                        text_en=user_responses['enter_text_edited'],
                     )
 
             elif action == 'delete':
@@ -191,6 +191,9 @@ class Editor(StatesEditor):
             keyboard.add(button_label)
 
         return keyboard
+
+    def delete_user_resposes(self, user_id):
+        del self.user_responses[user_id]
 
     def state_parser(self, state):
         state_group, state_name = state.split(':')

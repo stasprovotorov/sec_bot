@@ -96,7 +96,6 @@ def editor_dialog_provider(message):
     
     try:
         state = editor.get_next_user_state(user.id)
-
         bot.set_state(user.id, state)
 
         content_type, action, state_name = editor.state_parser(state)
@@ -136,13 +135,13 @@ def confirmation(call):
             user_responses=editor.user_responses[user.id]['user_responses']
         )
 
-        editor.user_responses[user.id].clear()
+        editor.delete_user_responses(user.id)
 
         msg = editor_msg['confirmation']['confirm_response']['approved'][user.lang]
         bot.send_message(user.id, msg)
 
     elif call.data == 'cancel':
-        editor.user_responses[user.id].clear()
+        editor.delete_user_responses(user.id)
 
         msg = editor_msg['confirmation']['confirm_response']['canceled'][user.lang]
         bot.send_message(user.id, msg)

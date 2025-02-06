@@ -31,7 +31,7 @@ editor_msg = {
                 'ru': 'Выберите язык редактирования',
                 'en': 'Select the editing language'
             },
-            'enter_edited_text': {
+            'enter_text_edited': {
                 'ru': 'Введите редактированный текст',
                 'en': 'Enter the edited text'
             }
