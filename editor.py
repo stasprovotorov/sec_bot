@@ -45,10 +45,10 @@ class StatesImageDelete(StatesBase):
 
 
 class StatesButtonNew(StatesBase):
-    button_sys_name = State()
-    button_label_ru = State()
-    button_label_en = State()
-    button_action = State()
+    enter_button_name = State()
+    enter_button_label_ru = State()
+    enter_button_label_en = State()
+    enter_button_to_view_name = State()
 
 
 # As example. Should be refactored in future
@@ -143,8 +143,6 @@ class Editor(StatesEditor):
         self.user_responses[user_id]['user_responses'][state_name] = user_input
 
     def commit_user_responses(self, content_type, action, user_responses):
-        print(content_type, action, user_responses)
-
         if content_type == 'text':
             if action == 'new':
                 self.stg_content.text.save(
@@ -185,7 +183,19 @@ class Editor(StatesEditor):
                 )
 
         elif content_type == 'button':
-            pass
+            if action == 'new':
+                self.stg_content.button.save(
+                    name=user_responses['enter_button_name'],
+                    label_ru=user_responses['enter_button_label_ru'],
+                    label_en=user_responses['enter_button_label_en'],
+                    to_view=user_responses['enter_button_to_view_name']
+                )
+
+            elif action == 'edit':
+                pass
+
+            elif action == 'delete':
+                pass
 
         elif content_type == 'view':
             pass

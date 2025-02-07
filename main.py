@@ -50,7 +50,7 @@ def editor_menu(call):
     bot.send_message(call.message.chat.id, msg, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data in ['edit_txt_menu', 'edit_img_menu'])
+@bot.callback_query_handler(func=lambda call: call.data in ['edit_txt_menu', 'edit_img_menu', 'edit_btn_menu'])
 def edit_content_type_menu(call):
     msg = editor_msg[call.data][call.from_user.language_code]
     keyboard = types.InlineKeyboardMarkup(row_width=3)

@@ -11,6 +11,10 @@ editor_msg = {
         'ru': 'Что ты желаешь сделать с изображением?',
         'en': 'What do you want to do with the image?'
     },
+    'edit_btn_menu': {
+        'ru': 'Что ты желаешь сделать с кнопкой?',
+        'en': 'What do you want to do with the button?'
+    },
     'text': {
         'new': {
             'enter_text_name': {
@@ -65,6 +69,26 @@ editor_msg = {
             }
         }
     },
+    'button': {
+        'new': {
+            'enter_button_name': {
+                'ru': 'Введитие системное имя кнопки',
+                'en': 'Enter a system name for the button'
+            },
+            'enter_button_label_ru': {
+                'ru': 'Введите лейбл кнопки на русском языке',
+                'en': 'Enter the button label in Russian'
+            },
+            'enter_button_label_en': {
+                'ru': 'Введите лейбл кнопки на английском языке',
+                'en': 'Enter the button label in English'
+            },
+            'enter_button_to_view_name': {
+                'ru': 'Введите имя представления, вызываемое кнопкой',
+                'en': 'Enter the name of the view called by the button'
+            }
+        }
+    },
     'confirmation': {
         'confirm_request': {
             'ru': 'Подтвердите данные',
@@ -104,7 +128,7 @@ editor_btn = {
                 'ru': 'Кнопки',
                 'en': 'Buttons'
             },
-            'cnt_next': 'edit_btn'
+            'cnt_next': 'edit_btn_menu'
         },
         'views': {
             'label': {
@@ -151,6 +175,29 @@ editor_btn = {
                 'en': 'Delete'
             },
             'cnt_next': 'state:image:delete'
+        }
+    },
+    'edit_btn_menu': {
+        'new_button': {
+            'label': {
+                'ru': 'Создать кнопку',
+                'en': 'New button'
+            },
+            'cnt_next': 'state:button:new'
+        },
+        'edit_button': {
+            'label': {
+                'ru': 'Редактировать кнопку',
+                'en': 'Edit button'
+            },
+            'cnt_next': 'state:button:edit'
+        },
+        'delete_button': {
+            'label': {
+                'ru': 'Удалить кнопку',
+                'en': 'Delete button'
+            },
+            'cnt_next': 'state:button:delete'
         }
     },
     'confirmation': {
