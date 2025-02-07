@@ -53,9 +53,10 @@ class StatesButtonNew(StatesBase):
 
 # As example. Should be refactored in future
 class StatesButtonEdit(StatesBase):
-    button_choose_sys_name = State()
-    button_choose_component = State()
-    button_edit_component = State()
+    push_button_name = State()
+    push_button_component = State()
+    push_label_lang = State()
+    enter_label = State()
 
 
 class StatesButtonDelete(StatesBase):
