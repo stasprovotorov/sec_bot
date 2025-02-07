@@ -1,6 +1,7 @@
 from telebot import types
 from telebot.handler_backends import StatesGroup, State
 import editor_data as ed
+from storage import StorageContent
 
 
 class StatesBase(StatesGroup):
@@ -51,12 +52,18 @@ class StatesButtonNew(StatesBase):
     enter_button_to_view_name = State()
 
 
-# As example. Should be refactored in future
 class StatesButtonEdit(StatesBase):
     push_button_name = State()
     push_button_component = State()
-    push_label_lang = State()
-    enter_label = State()
+
+
+class StatesButtonLabel(StatesBase):
+    push_button_label_lang = State()
+    enter_button_label_name = State()
+
+
+class StatesButtonView(StatesBase):
+    enter_button_to_view_name = State()
 
 
 class StatesButtonDelete(StatesBase):
@@ -93,11 +100,20 @@ class StatesEditor:
         'button': {
             'new': StatesButtonNew,
             'edit': StatesButtonEdit,
-            'delete': StatesButtonDelete
+            'delete': StatesButtonDelete,
+            'label': StatesButtonLabel,
+            'view': StatesButtonView
         },
         'view': {
             'new': StatesButtonNew,
             'delete': StatesButtonDelete
+        }
+    }
+
+    state_branches = {
+        'StatesButtonEdit:push_button_component': {
+            'Label': StatesButtonLabel,
+            'View': StatesButtonView
         }
     }
 
@@ -122,7 +138,10 @@ class Editor(StatesEditor):
         self._state_to_storage_method = {
             'push_text_name': self.stg_content.text.get_all_text_names,
             'push_text_lang': lambda: ['ru', 'en'],
-            'push_image_name': self.stg_content.image.get_all_image_names
+            'push_image_name': self.stg_content.image.get_all_image_names,
+            'push_button_name': self.stg_content.button.get_all_button_names,
+            'push_button_component': lambda: ['Label', 'View'],
+            'push_button_label_lang': lambda: ['ru', 'en']
         }
 
     def set_user_states(self, user_id, state):
@@ -144,6 +163,7 @@ class Editor(StatesEditor):
         self.user_responses[user_id]['user_responses'][state_name] = user_input
 
     def commit_user_responses(self, content_type, action, user_responses):
+
         if content_type == 'text':
             if action == 'new':
                 self.stg_content.text.save(

@@ -116,22 +116,38 @@ def editor_dialog_provider(message):
         bot.send_message(user.id, msg, reply_markup=keyboard)
 
     except StopIteration:
-        bot.delete_state(user.id)
+        state = bot.get_state(user.id)
+        
+        if state in editor.state_branches:
+            states_iter = editor.state_branches[state][user_input].get_states_iter()
+            editor.set_user_states(user.id, states_iter)
+            user_state = editor.get_next_user_state(user.id)
+            bot.set_state(user.id, user_state)
 
-        msg = editor_msg['confirmation']['confirm_request'][user.lang]
+            state_category, state_group, state_name = editor.state_parser(user_state)
 
-        keyboard = types.InlineKeyboardMarkup()
-        buttons = []
-        for button_name in editor_btn['confirmation']:
-            buttons.append(
-                types.InlineKeyboardButton(
-                    text=editor_btn['confirmation'][button_name]['label'][user.lang],
-                    callback_data=editor_btn['confirmation'][button_name]['cnt_next']
+            msg = editor_msg[state_category][state_group][state_name][user.lang]
+            keyboard = editor.state_to_keyboard(state_name)
+
+            bot.send_message(user.id, msg, reply_markup=keyboard)
+
+        else:
+            bot.delete_state(user.id)
+
+            msg = editor_msg['confirmation']['confirm_request'][user.lang]
+
+            keyboard = types.InlineKeyboardMarkup()
+            buttons = []
+            for button_name in editor_btn['confirmation']:
+                buttons.append(
+                    types.InlineKeyboardButton(
+                        text=editor_btn['confirmation'][button_name]['label'][user.lang],
+                        callback_data=editor_btn['confirmation'][button_name]['cnt_next']
+                    )
                 )
-            )
-        keyboard.row(*buttons)
+            keyboard.row(*buttons)
 
-        bot.send_message(user.id, msg, reply_markup=keyboard)
+            bot.send_message(user.id, msg, reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data in ['confirm', 'cancel'])

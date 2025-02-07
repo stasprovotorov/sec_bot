@@ -85,7 +85,33 @@ editor_msg = {
             },
             'enter_button_to_view_name': {
                 'ru': 'Введите имя представления, вызываемое кнопкой',
-                'en': 'Enter the name of the view called by the button'
+                'en': 'Enter a name of the view called by the button'
+            }
+        },
+        'edit': {
+            'push_button_name': {
+                'ru': 'Выберите системной имя кнопки',
+                'en': 'Select a system name for the button'
+            },
+            'push_button_component': {
+                'ru': 'Выберите компонент кнопки',
+                'en': 'Select a component of the button'
+            }
+        },
+        'label': {
+            'push_button_label_lang': {
+                'ru': 'Выберите язык лебла кнопки',
+                'en': 'Select a lable language of the button'
+            },
+            'enter_button_label_name': {
+                'ru': 'Введите новое значение для лейбла кнопки',
+                'en': 'Enter a new value of the button label'
+            }
+        },
+        'view': {
+            'enter_button_to_view_name': {
+                'ru': 'Введите новое имя представления, вызываемое кнопкой',
+                'en': 'Enter a new name of the view called by the button'
             }
         }
     },
