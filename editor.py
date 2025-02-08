@@ -71,10 +71,10 @@ class StatesButtonDelete(StatesBase):
 
 
 class StatesViewNew(StatesBase):
-    view_sys_name = State()
-    view_choose_text = State()
-    view_choose_image = State()
-    view_choose_button = State()
+    enter_view_name = State()
+    push_text_name = State()
+    push_image_name = State() # Can be None
+    push_button_name = State()
 
 
 # To think about. Not added to StatesEditor.states
