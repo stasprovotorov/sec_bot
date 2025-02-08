@@ -105,8 +105,9 @@ class StatesEditor:
             'view': StatesButtonView
         },
         'view': {
-            'new': StatesButtonNew,
-            'delete': StatesButtonDelete
+            'new': StatesViewNew,
+            'edit': StatesViewEdit,
+            'delete': StatesViewDelete
         }
     }
 
@@ -115,6 +116,10 @@ class StatesEditor:
             'Label': StatesButtonLabel,
             'View': StatesButtonView
         }
+    }
+
+    multi_push_state = {
+        'StatesViewNew:push_button_name'
     }
 
     @classmethod
@@ -134,6 +139,7 @@ class Editor(StatesEditor):
         self.stg_content = stg_content
         self.user_states = {}
         self.user_responses = {}
+        self.user_multi_push_data = []
 
         self._state_to_storage_method = {
             'push_text_name': self.stg_content.text.get_all_text_names,
@@ -232,17 +238,33 @@ class Editor(StatesEditor):
                 )
 
         elif content_type == 'view':
-            pass
+            if action == 'new':
+                self.stg_content.view.save(
+                    name=user_responses['enter_view_name'],
+                    text=user_responses['push_text_name'],
+                    image=user_responses['push_image_name'],
+                    buttons=user_responses['push_button_name']
+                )
 
-    def state_to_keyboard(self, state_name):
+            elif action == 'edit':
+                pass
+            elif action == 'delete':
+                pass
+
+    def state_to_keyboard(self, state_name, state=None):
         if state_name not in self._state_to_storage_method:
-            return None
+            return
         
         button_labels = self._state_to_storage_method[state_name]()
+        one_time_keyboard = True
+
+        if state in self.multi_push_state:
+            one_time_keyboard = False
+            button_labels.insert(0, 'Commit selection')
 
         keyboard = types.ReplyKeyboardMarkup(
             resize_keyboard=True, 
-            one_time_keyboard=True
+            one_time_keyboard=one_time_keyboard
         )
 
         for button_label in button_labels:

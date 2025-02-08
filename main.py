@@ -50,7 +50,7 @@ def editor_menu(call):
     bot.send_message(call.message.chat.id, msg, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data in ['edit_txt_menu', 'edit_img_menu', 'edit_btn_menu'])
+@bot.callback_query_handler(func=lambda call: call.data in ['edit_txt_menu', 'edit_img_menu', 'edit_btn_menu', 'edit_vw_menu'])
 def edit_content_type_menu(call):
     msg = editor_msg[call.data][call.from_user.language_code]
     keyboard = types.InlineKeyboardMarkup(row_width=3)
@@ -88,8 +88,18 @@ def start_editor_dialog(call):
 def editor_dialog_provider(message):
     user = User(stg_users, message.from_user.id, message.from_user.language_code)
 
+    state = bot.get_state(user.id)
+
     if message.text:
         user_input = message.text
+
+        if state in editor.multi_push_state and message.text != 'Commit selection':
+            editor.user_multi_push_data.append(user_input)
+
+            return
+        
+        elif state in editor.multi_push_state and message.text == 'Commit selection':
+            user_input = editor.user_multi_push_data
 
     elif message.photo:
         image_id = message.photo[-1].file_id
@@ -110,7 +120,7 @@ def editor_dialog_provider(message):
 
         content_type, action, state_name = editor.state_parser(state)
 
-        keyboard = editor.state_to_keyboard(state_name)
+        keyboard = editor.state_to_keyboard(state_name, state)
         msg = editor_msg[content_type][action][state_name][user.lang]
 
         bot.send_message(user.id, msg, reply_markup=keyboard)

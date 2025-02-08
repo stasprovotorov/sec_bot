@@ -174,7 +174,7 @@ class StorageButtons(StorageContent):
     
     @Storage._file_access()
     def get_all_button_names(self, db):
-        return db['button'].keys()
+        return list(db['button'].keys())
 
     @Storage._file_access(writeback=True)
     def save(self, db, name, label_ru, label_en, to_view):
@@ -201,6 +201,5 @@ if __name__ == '__main__':
     stg_content = StorageContent()
     stg_content.lazy_init()
 
-    view = stg_content.view.get('start')
-
-    print(view)
+    with shelve.open(stg_content._file_path) as db:
+        print(db['view'])

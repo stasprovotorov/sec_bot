@@ -15,6 +15,10 @@ editor_msg = {
         'ru': 'Что ты желаешь сделать с кнопкой?',
         'en': 'What do you want to do with the button?'
     },
+    'edit_vw_menu': {
+        'ru': 'Что ты желаешь сделать с представлением?',
+        'en': 'What do you want to do with the view?'
+    },
     'text': {
         'new': {
             'enter_text_name': {
@@ -121,6 +125,26 @@ editor_msg = {
             }
         }
     },
+    'view': {
+        'new': {
+            'enter_view_name': {
+                'ru': 'Введитие системное имя представления',
+                'en': 'Enter a name for the view'
+            },
+            'push_text_name': {
+                'ru': 'Выберите имя текста для представления',
+                'en': 'Select a text name for the view'
+            },
+            'push_image_name': {
+                'ru': 'Выберите имя изображения для представления',
+                'en': 'Select a image name for the view'
+            },
+            'push_button_name': {
+                'ru': 'Выберите имя кнопки для представдения',
+                'en': 'Select a button name for the view'
+            }
+        }
+    },
     'confirmation': {
         'confirm_request': {
             'ru': 'Подтвердите данные',
@@ -167,7 +191,7 @@ editor_btn = {
                 'ru': 'Представления',
                 'en': 'Views'
             },
-            'cnt_next': 'edit_vw'
+            'cnt_next': 'edit_vw_menu'
         }
     },
     'edit_txt_menu': {
@@ -230,6 +254,29 @@ editor_btn = {
                 'en': 'Delete button'
             },
             'cnt_next': 'state:button:delete'
+        },
+    },
+    'edit_vw_menu': {
+        'new_view': {
+            'label': {
+                'ru': 'Создать',
+                'en': 'Create'
+            },
+            'cnt_next': 'state:view:new'
+        },
+        'edit_view': {
+            'label': {
+                'ru': 'Редактировать',
+                'en': 'Edit'
+            },
+            'cnt_next': 'state:view:edit'
+        },
+        'delete_view': {
+            'label': {
+                'ru': 'Удалить',
+                'en': 'Delete'
+            },
+            'cnt_next': 'state:view:delete'
         }
     },
     'confirmation': {
@@ -280,3 +327,4 @@ for content_type, state_group in zip(content_types, state_groups_all):
     state_group_to_content_type.update(
         dict.fromkeys(state_group, content_type)
     )
+ 
