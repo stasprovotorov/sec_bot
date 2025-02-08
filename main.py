@@ -154,8 +154,6 @@ def editor_dialog_provider(message):
 def confirmation(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
 
-    print(editor.user_responses)
-
     if call.data == 'confirm':
         editor.commit_user_responses(
             content_type=editor.user_responses[user.id]['content_type'],

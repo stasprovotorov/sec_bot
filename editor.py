@@ -163,7 +163,6 @@ class Editor(StatesEditor):
         self.user_responses[user_id]['user_responses'][state_name] = user_input
 
     def commit_user_responses(self, content_type, action, user_responses):
-
         if content_type == 'text':
             if action == 'new':
                 self.stg_content.text.save(
@@ -213,7 +212,19 @@ class Editor(StatesEditor):
                 )
 
             elif action == 'edit':
-                pass
+                button_name = user_responses['push_button_name']
+                button_component = user_responses['push_button_component']
+                
+                if button_component == 'Label':
+                    label_lang = user_responses['push_button_label_lang']
+                    label = user_responses['enter_button_label_name']
+
+                    self.stg_content.button.save_label(button_name, label_lang, label)
+
+                elif button_component == 'View':
+                    view_name = user_responses['enter_button_to_view_name']
+
+                    self.stg_content.button.save_view(button_name, view_name)
 
             elif action == 'delete':
                 pass

@@ -191,6 +191,14 @@ class StorageButtons(StorageContent):
         }
 
     @Storage._file_access(writeback=True)
+    def save_label(self, db, button_name, label_lang, label):
+        db['button'][button_name]['label'][label_lang] = label
+
+    @Storage._file_access(writeback=True)
+    def save_view(self, db, button_name, to_view):
+        db['button'][button_name]['to_view'] = to_view
+
+    @Storage._file_access(writeback=True)
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
@@ -201,5 +209,5 @@ if __name__ == '__main__':
     stg_content.lazy_init()
 
     with shelve.open(stg_content._file_path) as db:
-        print(db['button'])
+        print(db['button']['BtnName'])
         
