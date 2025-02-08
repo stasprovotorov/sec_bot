@@ -90,12 +90,18 @@ editor_msg = {
         },
         'edit': {
             'push_button_name': {
-                'ru': 'Выберите системной имя кнопки',
+                'ru': 'Выберите системное имя кнопки',
                 'en': 'Select a system name for the button'
             },
             'push_button_component': {
                 'ru': 'Выберите компонент кнопки',
                 'en': 'Select a component of the button'
+            }
+        },
+        'delete': {
+            'push_button_name': {
+                'ru': 'Выберите системное имя кнопки для удаления',
+                'en': 'Select a button system name for deleting'
             }
         },
         'label': {

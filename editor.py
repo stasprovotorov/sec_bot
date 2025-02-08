@@ -67,7 +67,7 @@ class StatesButtonView(StatesBase):
 
 
 class StatesButtonDelete(StatesBase):
-    button_choose_sys_name = State()
+    push_button_name = State()
 
 
 class StatesViewNew(StatesBase):
@@ -227,7 +227,9 @@ class Editor(StatesEditor):
                     self.stg_content.button.save_view(button_name, view_name)
 
             elif action == 'delete':
-                pass
+                self.stg_content.button.delete(
+                    name=user_responses['push_button_name']
+                )
 
         elif content_type == 'view':
             pass
