@@ -75,13 +75,6 @@ class StorageContent(Storage):
         'button': dict
     }
 
-    # def __init__(self):
-    #     super().__init__()
-    #     self.views = None
-    #     self.texts = None
-    #     self.images = None
-    #     self.buttons = None
-
     def lazy_init(self):
         self.view = StorageViews()
         self.text = StorageTexts()
@@ -208,6 +201,6 @@ if __name__ == '__main__':
     stg_content = StorageContent()
     stg_content.lazy_init()
 
-    with shelve.open(stg_content._file_path) as db:
-        print(db['view'])
-        
+    view = stg_content.view.get('start')
+
+    print(view)
