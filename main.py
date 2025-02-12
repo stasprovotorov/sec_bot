@@ -66,6 +66,28 @@ def edit_content_type_menu(call):
     bot.send_message(call.message.chat.id, msg, reply_markup=keyboard)
 
 
+@bot.callback_query_handler(func=lambda call: call.data == 'editor_view_component_choice')
+def editor_view_component_choice(call):
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+    callback_data = call.data
+
+    message = editor_msg[call.data][user.lang]
+
+    buttons = []
+    for button_name in editor_btn[callback_data]:
+        buttons.append(
+            types.InlineKeyboardButton(
+                text=editor_btn[callback_data][button_name]['label'][user.lang],
+                callback_data=editor_btn[callback_data][button_name]['callback_data']
+            )
+        )
+
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(*buttons)
+
+    bot.send_message(user.id, message, reply_markup=keyboard)
+
+
 @bot.callback_query_handler(func=lambda call: call.data.startswith('state'))
 def start_editor_dialog(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)

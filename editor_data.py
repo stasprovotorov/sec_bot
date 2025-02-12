@@ -19,6 +19,10 @@ editor_msg = {
         'ru': 'Что ты желаешь сделать с представлением?',
         'en': 'What do you want to do with the view?'
     },
+    'editor_view_component_choice': {
+        'ru': 'Какой компонент представления вы хотите редактировать?',
+        'en': 'Which view component would you like to edit?'
+    },
     'text': {
         'new': {
             'enter_text_name': {
@@ -143,7 +147,7 @@ editor_msg = {
                 'ru': 'Выберите имя кнопки для представдения',
                 'en': 'Select a button name for the view'
             }
-        }
+        },
     },
     'confirmation': {
         'confirm_request': {
@@ -269,7 +273,7 @@ editor_btn = {
                 'ru': 'Редактировать',
                 'en': 'Edit'
             },
-            'cnt_next': 'state:view:edit'
+            'cnt_next': 'editor_view_component_choice'
         },
         'delete_view': {
             'label': {
@@ -293,6 +297,29 @@ editor_btn = {
                 'en': 'Cancel'
             },
             'cnt_next': 'cancel'
+        }
+    },
+    'editor_view_component_choice': {
+        'edit_view_text': {
+            'label': {
+                'ru': 'Текст',
+                'en': 'Text'
+            },
+            'callback_data': 'state:view:text'
+        },
+        'edit_view_image': {
+            'label': {
+                'ru': 'Изображение',
+                'en': 'Image'
+            },
+            'callback_data': 'state:view:image'
+        },
+        'edit_view_button': {
+            'label': {
+                'ru': 'Кнопки',
+                'en': 'Buttons'
+            },
+            'callback_data': 'state:view:button'
         }
     }
 }
