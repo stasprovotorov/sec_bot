@@ -23,6 +23,13 @@ vw = View(bot, stg_content)
 
 editor = Editor(stg_content)
 
+call_filter = {
+    'editor_view_component_action': (
+        'editor_view_action_text',
+        'editor_view_action_image',
+        'editor_view_action_button'
+    )
+}
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -71,7 +78,7 @@ def editor_view_component_choice(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
     callback_data = call.data
 
-    message = editor_msg[call.data][user.lang]
+    message = editor_msg[callback_data][user.lang]
 
     buttons = []
     for button_name in editor_btn[callback_data]:
@@ -79,6 +86,28 @@ def editor_view_component_choice(call):
             types.InlineKeyboardButton(
                 text=editor_btn[callback_data][button_name]['label'][user.lang],
                 callback_data=editor_btn[callback_data][button_name]['callback_data']
+            )
+        )
+
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(*buttons)
+
+    bot.send_message(user.id, message, reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: call.data in call_filter['editor_view_component_action'])
+def editor_view_component_action(call):
+    user = User(stg_users, call.from_user.id, call.from_user.language_code)
+    callback_data = call.data
+
+    message = editor_msg[callback_data][user.lang]
+
+    buttons = []
+    for button_name in editor_btn['editor_view_component_action'][callback_data]:
+        buttons.append(
+            types.InlineKeyboardButton(
+                text=editor_btn['editor_view_component_action'][callback_data][button_name]['label'][user.lang],
+                callback_data=editor_btn['editor_view_component_action'][callback_data][button_name]['callback_data']
             )
         )
 

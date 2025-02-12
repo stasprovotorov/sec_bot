@@ -23,6 +23,18 @@ editor_msg = {
         'ru': 'Какой компонент представления вы хотите редактировать?',
         'en': 'Which view component would you like to edit?'
     },
+    'editor_view_action_text': {
+        'ru': 'Выберите действие с текстом',
+        'en': 'Choose an action with the text'
+    },
+    'editor_view_action_image': {
+        'ru': 'Выберите действие с изображением',
+        'en': 'Choose an action with the image'
+    },
+    'editor_view_action_button': {
+        'ru': 'Выберите действие с кнопками',
+        'en': 'Choose an action with the buttons'
+    },
     'text': {
         'new': {
             'enter_text_name': {
@@ -305,21 +317,85 @@ editor_btn = {
                 'ru': 'Текст',
                 'en': 'Text'
             },
-            'callback_data': 'state:view:text'
+            'callback_data': 'editor_view_action_text'
         },
         'edit_view_image': {
             'label': {
                 'ru': 'Изображение',
                 'en': 'Image'
             },
-            'callback_data': 'state:view:image'
+            'callback_data': 'editor_view_action_image'
         },
         'edit_view_button': {
             'label': {
                 'ru': 'Кнопки',
                 'en': 'Buttons'
             },
-            'callback_data': 'state:view:button'
+            'callback_data': 'editor_view_action_button'
+        }
+    },
+    'editor_view_component_action': {
+        'editor_view_action_text': {
+            'edit_view_text_add': {
+                'label': {
+                    'ru': 'Добавить',
+                    'en': 'Add'
+                },
+                'callback_data': 'state:view:text_add'
+            },
+            'edit_view_text_replace': {
+                'label': {
+                    'ru': 'Заменить',
+                    'en': 'Replace'
+                },
+                'callback_data': 'state:view:text_replace'
+            }
+        },
+        'editor_view_action_image': {
+            'edit_view_image_add': {
+                'label': {
+                    'ru': 'Добавить',
+                    'en': 'Add'
+                },
+                'callback_data': 'state:view:image_add'
+            },
+            'edit_view_image_replace': {
+                'label': {
+                    'ru': 'Заменить',
+                    'en': 'Replace'
+                },
+                'callback_data': 'state:view:image_replace'
+            },
+            'edit_view_image_delete': {
+                'label': {
+                    'ru': 'Удалить',
+                    'en': 'Delete'
+                },
+                'callback_data': 'state:view:image_delete'
+            }
+        },
+        'editor_view_action_button': {
+            'edit_view_button_add': {
+                'label': {
+                    'ru': 'Добавить',
+                    'en': 'Add'
+                },
+                'callback_data': 'state:view:button_add'
+            },
+            'edit_view_button_replace': {
+                'label': {
+                    'ru': 'Заменить',
+                    'en': 'Replace'
+                },
+                'callback_data': 'state:view:button_replace'
+            },
+            'edit_view_button_delete': {
+                'label': {
+                    'ru': 'Удалить',
+                    'en': 'Delete'
+                },
+                'callback_data': 'state:view:button_delete'
+            }
         }
     }
 }
