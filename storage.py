@@ -104,6 +104,10 @@ class StorageViews(StorageContent):
 
         return view_data
 
+    @Storage._file_access()
+    def get_all_view_names(self, db):
+        return db['view'].keys()
+
     @Storage._file_access(writeback=True)
     def save(self, db, name, text, buttons, image=None):
         db['view'].setdefault(name, {})

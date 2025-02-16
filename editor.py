@@ -79,7 +79,19 @@ class StatesViewNew(StatesBase):
 
 # To think about. Not added to StatesEditor.states
 class StatesViewEdit(StatesBase):
-    pass
+    push_view_name = State()
+    push_view_component = State()
+    push_view_action = State()
+
+
+class StateViewSet_component:
+    push_view_name = State()
+    push_view_component = State()
+
+
+class StateViewDelete_component:
+    push_view_name = State()
+    push_view_component = State()
 
 
 class StatesViewDelete(StatesBase):
@@ -107,7 +119,7 @@ class StatesEditor:
         'view': {
             'new': StatesViewNew,
             'edit': StatesViewEdit,
-            'delete': StatesViewDelete
+            'delete': StatesViewDelete,
         }
     }
 
@@ -134,7 +146,6 @@ class StatesEditor:
     
 
 class Editor(StatesEditor):
-
     def __init__(self, stg_content):
         self.stg_content = stg_content
         self.user_states = {}
@@ -147,7 +158,10 @@ class Editor(StatesEditor):
             'push_image_name': self.stg_content.image.get_all_image_names,
             'push_button_name': self.stg_content.button.get_all_button_names,
             'push_button_component': lambda: ['Label', 'View'],
-            'push_button_label_lang': lambda: ['ru', 'en']
+            'push_button_label_lang': lambda: ['ru', 'en'],
+            'push_view_name': self.stg_content.view.get_all_view_names,
+            'push_view_component': lambda: ['Text', 'Image', 'Buttons'],
+            'push_view_action': lambda: ['Set', 'Delete']
         }
 
     def set_user_states(self, user_id, state):
@@ -155,6 +169,24 @@ class Editor(StatesEditor):
 
     def get_next_user_state(self, user_id):
         return next(self.user_states[user_id])
+
+    def collect_user_input(self, user_id, user_input=None, user_state=None, view_component=None, view_component_action=None):
+        user_input_data = self.user_responses.setdefault(user_id, {'user_responses': {}})
+
+        if user_state:
+            content_type, action, state_name = self.state_parser(user_state)
+
+            user_input_data['content_type'] = content_type
+            user_input_data['action'] = action
+            user_input_data['user_responses'][state_name] = user_input
+
+        if view_component:
+            user_input_data['view_component'] = view_component
+
+        if view_component_action:
+            user_input_data['view_component_action'] = view_component_action
+
+        print(self.user_responses)
 
     def collect_user_responses(self, user_id, user_state, user_input):
         content_type, action, state_name = self.state_parser(user_state)
@@ -277,6 +309,9 @@ class Editor(StatesEditor):
 
     def state_parser(self, state):
         state_group, state_name = state.split(':')
+        state_group, *component = state_group.split('_')
+
+        print(state_group, component)
 
         index_left = 0
         separated_words = []
@@ -290,3 +325,9 @@ class Editor(StatesEditor):
         _, content_type, action = separated_words
 
         return content_type.lower(), action.lower(), state_name
+
+
+if __name__ == '__main__':
+    state = StatesImageNew.enter_image.name
+    print(type(state))
+    print(state)

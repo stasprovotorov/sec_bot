@@ -95,19 +95,21 @@ def editor_view_component_choice(call):
     bot.send_message(user.id, message, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data in call_filter['editor_view_component_action'])
+@bot.callback_query_handler(func=lambda call: call.data.startswith('editor_view_action'))
 def editor_view_component_action(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
-    callback_data = call.data
+    callback_data, view_component = call.data.split(':')
+
+    editor.collect_user_input(user_id=user.id, view_component=view_component)
 
     message = editor_msg[callback_data][user.lang]
 
     buttons = []
-    for button_name in editor_btn['editor_view_component_action'][callback_data]:
+    for button_name in editor_btn['editor_view_action']:
         buttons.append(
             types.InlineKeyboardButton(
-                text=editor_btn['editor_view_component_action'][callback_data][button_name]['label'][user.lang],
-                callback_data=editor_btn['editor_view_component_action'][callback_data][button_name]['callback_data']
+                text=editor_btn['editor_view_action'][button_name]['label'][user.lang],
+                callback_data=editor_btn['editor_view_action'][button_name]['callback_data']
             )
         )
 
@@ -159,10 +161,10 @@ def editor_dialog_provider(message):
         
         user_input = image
 
-    editor.collect_user_responses(
+    editor.collect_user_input(
         user_id=user.id,
-        user_state=bot.get_state(user.id), 
-        user_input=user_input
+        user_input=user_input,
+        user_state=bot.get_state(user.id)
     )
     
     try:
