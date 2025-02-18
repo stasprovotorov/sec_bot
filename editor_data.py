@@ -335,21 +335,21 @@ editor_btn = {
                 'ru': 'Текст',
                 'en': 'Text'
             },
-            'callback_data': 'editor_view_action:text'
+            'callback_data': 'editor_view_component:text'
         },
         'edit_view_image': {
             'label': {
                 'ru': 'Изображение',
                 'en': 'Image'
             },
-            'callback_data': 'editor_view_action:image'
+            'callback_data': 'editor_view_component:image'
         },
         'edit_view_button': {
             'label': {
                 'ru': 'Кнопки',
                 'en': 'Buttons'
             },
-            'callback_data': 'editor_view_action:button'
+            'callback_data': 'editor_view_component:buttons'
         }
     },
     'editor_view_action': {

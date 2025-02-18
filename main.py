@@ -5,7 +5,7 @@ from telebot import TeleBot, types, custom_filters
 from telebot.storage import StateMemoryStorage
 from view import View
 
-from editor import Editor
+from editor import Editor, StatesViewEdit
 from editor_data import editor_msg, editor_btn, state_group_to_content_type
 
 config = dotenv_values('tg_bot_token.env')
@@ -95,28 +95,48 @@ def editor_view_component_choice(call):
     bot.send_message(user.id, message, reply_markup=keyboard)
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('editor_view_action'))
-def editor_view_component_action(call):
+@bot.callback_query_handler(func=lambda call: call.data.startswith('editor_view_component'))
+def editor_view_name_choice(call):
     user = User(stg_users, call.from_user.id, call.from_user.language_code)
-    callback_data, view_component = call.data.split(':')
 
-    editor.collect_user_input(user_id=user.id, view_component=view_component)
+    _, view_component = call.data.split(':')
+    
+    editor.save_user_input(user.id, view_component=view_component)
 
-    message = editor_msg[callback_data][user.lang]
+    bot.set_state(user.id, StatesViewEdit.push_view_name)
+    _, state = StatesViewEdit.push_view_name.name.split(':')
 
-    buttons = []
-    for button_name in editor_btn['editor_view_action']:
-        buttons.append(
-            types.InlineKeyboardButton(
-                text=editor_btn['editor_view_action'][button_name]['label'][user.lang],
-                callback_data=editor_btn['editor_view_action'][button_name]['callback_data']
-            )
-        )
+    keyboard = editor.state_to_keyboard(state)
 
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.row(*buttons)
+    bot.send_message(
+        user.id,
+        text=editor_msg['view']['edit'][state][user.lang],
+        reply_markup=keyboard
+    )
 
-    bot.send_message(user.id, message, reply_markup=keyboard)
+
+# @bot.callback_query_handler(func=lambda call: call.data.startswith('editor_view_action'))
+# def editor_view_component_action(call):
+#     user = User(stg_users, call.from_user.id, call.from_user.language_code)
+#     callback_data, view_component = call.data.split(':')
+
+#     editor.collect_user_input(user_id=user.id, view_component=view_component)
+
+#     message = editor_msg[callback_data][user.lang]
+
+#     buttons = []
+#     for button_name in editor_btn['editor_view_action']:
+#         buttons.append(
+#             types.InlineKeyboardButton(
+#                 text=editor_btn['editor_view_action'][button_name]['label'][user.lang],
+#                 callback_data=editor_btn['editor_view_action'][button_name]['callback_data']
+#             )
+#         )
+
+#     keyboard = types.InlineKeyboardMarkup()
+#     keyboard.row(*buttons)
+
+#     bot.send_message(user.id, message, reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('state'))
