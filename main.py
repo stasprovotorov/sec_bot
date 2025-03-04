@@ -1,18 +1,20 @@
 from dotenv import dotenv_values
+
 from storage import StorageUsers, StorageContent
 from user import User
 from telebot import TeleBot, types, custom_filters
 from telebot.storage import StateMemoryStorage
 from view import View
-
 from editor import Editor, StatesViewEdit
 from editor_data import editor_msg, editor_btn, state_group_to_content_type
 
-config = dotenv_values('tg_bot_token.env')
-TOKEN = config['TOKEN']
+# Load the Telegram bot token from config.env
+config = dotenv_values('config.env')
+TELEGRAM_BOT_TOKEN = config['TELEGRAM_BOT_TOKEN']
+
 
 storage = StateMemoryStorage()
-bot = TeleBot(TOKEN, state_storage=storage)
+bot = TeleBot(TELEGRAM_BOT_TOKEN, state_storage=storage)
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 
 stg_users = StorageUsers()
