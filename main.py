@@ -3,7 +3,7 @@ from telebot.storage import StateMemoryStorage
 
 from storage import StorageUsers, StorageContent
 from user import User
-from telebot import TeleBot, types, custom_filters
+from telebot import TeleBot, types
 from view import View
 from editor import Editor, StatesViewEdit
 from editor_data import editor_msg, editor_btn, state_group_to_content_type
@@ -15,8 +15,6 @@ TELEGRAM_BOT_TOKEN = config['TELEGRAM_BOT_TOKEN']
 # Initialize the Telegram bot object with a StateMemoryStorage object for storing user states
 state_storage = StateMemoryStorage()
 bot = TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
-
-bot.add_custom_filter(custom_filters.StateFilter(bot))
 
 stg_users = StorageUsers()
 stg_content = StorageContent()
