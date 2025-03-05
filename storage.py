@@ -2,28 +2,37 @@ import os
 import shelve
 from functools import wraps
 
-class Storage:
-    _FOLDER = 'data_storage'
-    _FILENAME: str
-    _default_structure: dict
 
-    def __init__(self):
-        for var in Storage.__annotations__:
-            if not hasattr(self, var):
-                raise AttributeError(f'Variable {var} is not defined in subclass {self.__class__.__name__}')
-            if not getattr(self, var):
-                raise ValueError(f'Variable {var} cannot be empty or None')
+class StorageBase:
+    '''A base class for working with data from persistent storage'''
+
+    file_name: str
+    default_file_structure: dict
+
+    folder_name = 'data_storage'
+
+    def __init__(self) -> None:
+        # Checking required variables in the subclass
+        for annotation in StorageBase.__annotations__:
+            if not hasattr(self, annotation):
+                raise AttributeError(
+                    f'Variable <{annotation}> is not defined in subclass <{self.__class__.__name__}>'
+                )
             
-        if not os.path.exists(self._FOLDER):
-            os.makedirs(self._FOLDER)
+            if not getattr(self, annotation):
+                raise ValueError(f'Variable <{annotation}> cannot be empty or None')
         
-        self._file_path = os.path.join(self._FOLDER, self._FILENAME)
-        self._init_file()
-
-    def _init_file(self):
-        with shelve.open(self._file_path, writeback=True) as db:
-            for key, data_type in self._default_structure.items():
-                db.setdefault(key, data_type())
+        # Checking the storage folder and creating it if it does not exist
+        if not os.path.exists(StorageBase.folder_name):
+            os.mkdir(StorageBase.folder_name)
+        
+        self.file_path = os.path.join(StorageBase.folder_name, self.file_name)
+        
+        # Checking the storage file and creating it if it does not exist
+        if not os.path.exists(self.file_path):
+            with shelve.open(self.file_path, writeback=True) as db:
+                for key, data_type in self.default_file_structure.items():
+                    db.setdefault(key, data_type())
 
     @staticmethod
     def _file_access(writeback=False):
