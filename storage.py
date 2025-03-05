@@ -19,36 +19,33 @@ class StorageBase:
                     f'Variable <{annotation}> is not defined in subclass <{self.__class__.__name__}>'
                 )
             
-            if not getattr(self, annotation):
+            if getattr(self, annotation) is None:
                 raise ValueError(f'Variable <{annotation}> cannot be empty or None')
         
-        # Checking the storage folder and creating it if it does not exist
-        if not os.path.exists(StorageBase.folder_name):
-            os.mkdir(StorageBase.folder_name)
+        # Creating storage folder it if it does not exist
+        os.makedirs(StorageBase.folder_name, exist_ok=True)
         
         self.file_path = os.path.join(StorageBase.folder_name, self.file_name)
         
         # Checking the storage file and creating it if it does not exist
         if not os.path.exists(self.file_path):
             with shelve.open(self.file_path, writeback=True) as db:
-                for key, data_type in self.default_file_structure.items():
-                    db.setdefault(key, data_type())
+                for key, value in self.default_file_structure.items():
+                    db.setdefault(key, value)
 
     @staticmethod
-    def _file_access(writeback=False):
+    def file_access(writeback=False) -> None:
+        '''Decorator for opening and closing files in functions that work with them'''
+
         def decorator(func):
             @wraps(func)
+
             def wrapper(obj, *args, **kwargs):
-                try:
-                    with shelve.open(obj._file_path, writeback=writeback) as db:
-                        return func(obj, db, *args, **kwargs) 
-                except FileNotFoundError as e:
-                    raise RuntimeError(f'The file {obj._file_path} was not found') from e
-                except PermissionError as e:
-                    raise RuntimeError(f'You do not have permission to access the file {obj._file_path}') from e
-                except OSError as e:
-                    raise RuntimeError(f'An OS error occurred: {e}') from e
+                with shelve.open(obj.file_path, writeback=writeback) as db:
+                    return func(obj, db, *args, **kwargs)
+                 
             return wrapper
+        
         return decorator
 
 
