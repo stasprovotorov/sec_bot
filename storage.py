@@ -2,6 +2,7 @@ import os
 import shelve
 from functools import wraps
 from typing import Optional
+import exceptions
 
 
 class StorageBase:
@@ -62,6 +63,8 @@ class StorageUsers(StorageBase):
 
     @StorageBase.file_access(writeback=True)
     def save_user(self, db, user_id: int, user_language: str, user_role: str) -> None:
+        if db['users'].get(user_id):
+            raise exceptions.UserAlreadyExistsError(user_id)
         db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
     @Storage._file_access(writeback=True)
