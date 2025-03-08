@@ -60,9 +60,9 @@ class StorageUsers(StorageBase):
     def get_user(self, db, user_id: int) -> Optional[dict]:
         return db['users'].get(user_id)
 
-    @Storage._file_access(writeback=True)
-    def save_user(self, db, id, lang, role):
-        db['users'][id] = {'lang': lang, 'role': role}
+    @StorageBase.file_access(writeback=True)
+    def save_user(self, db, user_id: int, user_language: str, user_role: str) -> None:
+        db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
     @Storage._file_access(writeback=True)
     def del_user(self, db, user_id):
