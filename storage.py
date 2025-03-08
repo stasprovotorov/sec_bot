@@ -67,11 +67,11 @@ class StorageUsers(StorageBase):
             raise exceptions.UserAlreadyExistsError(user_id)
         db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
-    @Storage._file_access(writeback=True)
-    def del_user(self, db, user_id):
-        user_obj = db['users'].pop(user_id, None)
-        if user_obj is None:
-            raise KeyError(f'User with this ID {user_id} not found')
+    @StorageBase.file_access(writeback=True)
+    def delete_user(self, db, user_id: int) -> None:
+        if user_id not in db['users']:
+            raise exceptions.UserNotFoundError(user_id)
+        db['users'].pop(user_id)
 
     @Storage._file_access()
     def get_admins(self, db):
