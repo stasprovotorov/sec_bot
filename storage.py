@@ -1,6 +1,7 @@
 import os
 import shelve
 from functools import wraps
+from typing import Optional
 
 
 class StorageBase:
@@ -49,13 +50,15 @@ class StorageBase:
         return decorator
 
 
-class StorageUsers(Storage):
-    _FILENAME = 'data_users'
-    _default_structure = {'users': dict, 'admins': set}
+class StorageUsers(StorageBase):
+    '''A class for working with users data from persistent storage'''
 
-    @Storage._file_access()
-    def get_user(self, db, id):
-        return db['users'].get(id)
+    file_name = 'data_users'
+    default_file_structure = {'users': {}, 'admins': set()}
+
+    @StorageBase.file_access()
+    def get_user(self, db, user_id: int) -> Optional[dict]:
+        return db['users'].get(user_id)
 
     @Storage._file_access(writeback=True)
     def save_user(self, db, id, lang, role):
