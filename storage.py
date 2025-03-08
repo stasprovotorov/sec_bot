@@ -73,9 +73,9 @@ class StorageUsers(StorageBase):
             raise exceptions.UserNotFoundError(user_id)
         db['users'].pop(user_id)
 
-    @Storage._file_access()
-    def get_admins(self, db):
-        return db['admins']
+    @StorageBase.file_access()
+    def is_user_admin(self, db, user_id: int) -> bool:
+        return user_id in db['admins']
 
 
 class StorageContent(Storage):
