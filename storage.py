@@ -65,12 +65,14 @@ class StorageUsers(StorageBase):
     def save_user(self, db, user_id: int, user_language: str, user_role: str) -> None:
         if db['users'].get(user_id):
             raise exceptions.UserAlreadyExistsError(user_id)
+        
         db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
     @file_access(writeback=True)
     def delete_user(self, db, user_id: int) -> None:
         if user_id not in db['users']:
             raise exceptions.UserNotFoundError(user_id)
+        
         db['users'].pop(user_id)
 
     @file_access()
@@ -86,10 +88,10 @@ class StorageContent(StorageBase):
 
     def __init__(self) -> None:
         super().__init__()
-        self.view = StorageViews()
-        self.text = StorageTexts()
-        self.image = StorageImages()
-        self.button = StorageButtons()
+        self.views = StorageViews()
+        self.texts = StorageTexts()
+        self.images = StorageImages()
+        self.buttons = StorageButtons()
 
 
 class StorageViews():
