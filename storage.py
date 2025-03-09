@@ -5,6 +5,21 @@ from typing import Optional
 import exceptions
 
 
+def file_access(writeback=False) -> None:
+    '''Decorator for opening and closing files in methods that work with them'''
+
+    def decorator(func):
+        @wraps(func)
+
+        def wrapper(obj, *args, **kwargs):
+            with shelve.open(obj.file_path, writeback=writeback) as db:
+                return func(obj, db, *args, **kwargs)
+            
+        return wrapper
+    
+    return decorator
+
+
 class StorageBase:
     '''A base class for working with data from persistent storage'''
 
@@ -35,21 +50,6 @@ class StorageBase:
                 for key, value in self.default_file_structure.items():
                     db.setdefault(key, value)
 
-    @staticmethod
-    def file_access(writeback=False) -> None:
-        '''Decorator for opening and closing files in functions that work with them'''
-
-        def decorator(func):
-            @wraps(func)
-
-            def wrapper(obj, *args, **kwargs):
-                with shelve.open(obj.file_path, writeback=writeback) as db:
-                    return func(obj, db, *args, **kwargs)
-                 
-            return wrapper
-        
-        return decorator
-
 
 class StorageUsers(StorageBase):
     '''A class for working with users data from persistent storage'''
@@ -57,47 +57,43 @@ class StorageUsers(StorageBase):
     file_name = 'data_users'
     default_file_structure = {'users': {}, 'admins': set()}
 
-    @StorageBase.file_access()
+    @file_access()
     def get_user(self, db, user_id: int) -> Optional[dict]:
         return db['users'].get(user_id)
 
-    @StorageBase.file_access(writeback=True)
+    @file_access(writeback=True)
     def save_user(self, db, user_id: int, user_language: str, user_role: str) -> None:
         if db['users'].get(user_id):
             raise exceptions.UserAlreadyExistsError(user_id)
         db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
-    @StorageBase.file_access(writeback=True)
+    @file_access(writeback=True)
     def delete_user(self, db, user_id: int) -> None:
         if user_id not in db['users']:
             raise exceptions.UserNotFoundError(user_id)
         db['users'].pop(user_id)
 
-    @StorageBase.file_access()
+    @file_access()
     def is_user_admin(self, db, user_id: int) -> bool:
         return user_id in db['admins']
 
 
-class StorageContent(Storage):
-    _FILENAME = 'data_content'
-    _default_structure = {
-        'view': dict,
-        'text': dict,
-        'image': dict,
-        'button': dict
-    }
+class StorageContent(StorageBase):
+    '''Composite class for bot content component classes'''
 
-    def lazy_init(self):
+    file_name = 'data_content'
+    default_file_structure = {'view': {}, 'text': {}, 'image': {}, 'button': {}}
+
+    def __init__(self) -> None:
+        super().__init__()
         self.view = StorageViews()
         self.text = StorageTexts()
         self.image = StorageImages()
         self.button = StorageButtons()
 
 
-class StorageViews(StorageContent):
-    PROTECTED_VIEWS = ['start']
-
-    @Storage._file_access()
+class StorageViews():
+    @file_access()
     def get(self, db, view_name):
         view_content_map = db['view'][view_name]
         view_data = {}
@@ -116,34 +112,34 @@ class StorageViews(StorageContent):
 
         return view_data
 
-    @Storage._file_access()
+    @file_access()
     def get_all_view_names(self, db):
         return db['view'].keys()
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save(self, db, name, text, buttons, image=None):
         db['view'].setdefault(name, {})
         db['view'][name]['text'] = text
         db['view'][name]['button'] = buttons
         db['view'][name]['image'] = image
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def delete(self, db, name):
         del db['view'][name]
 
 
-class StorageTexts(StorageContent):
+class StorageTexts():
     PROTECTED_TEXTS = ('welcome')
 
-    @Storage._file_access()
+    @file_access()
     def get(self, db, name, lang):
         return db['text'][name][lang]
 
-    @Storage._file_access()
+    @file_access()
     def get_all_text_names(self, db):
         return db['text'].keys()
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save(self, db, name, text_ru=None, text_en=None):
         db['text'].setdefault(name, {})
 
@@ -155,59 +151,59 @@ class StorageTexts(StorageContent):
         elif text_en:
             db['text'][name]['en'] = text_en
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def delete(self, db, name):
         if name not in self.PROTECTED_TEXTS:
             del db['text'][name]
 
 
-class StorageImages(StorageContent):
-    @Storage._file_access()
+class StorageImages():
+    @file_access()
     def get(self, db, name):
         return db['image'][name]
     
-    @Storage._file_access()
+    @file_access()
     def get_all_image_names(self, db):
         return db['image'].keys()
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save(self, db, name, image):
         db['image'][name] = image
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def delete(self, db, name):
         del db['image'][name]
 
 
-class StorageButtons(StorageContent):
+class StorageButtons():
     PROTECTED_BUTTONS = ('editor', 'menu')
 
-    @Storage._file_access()
+    @file_access()
     def get(self, db, name, lang):
         label = db['button'][name]['label'][lang]
         to_view = db['button'][name]['to_view']
         return label, to_view
     
-    @Storage._file_access()
+    @file_access()
     def get_all_button_names(self, db):
         return list(db['button'].keys())
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save(self, db, name, label_ru, label_en, to_view):
         db['button'][name] = {
             'label': {'ru': label_ru, 'en': label_en},
             'to_view': to_view
         }
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save_label(self, db, button_name, label_lang, label):
         db['button'][button_name]['label'][label_lang] = label
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def save_view(self, db, button_name, to_view):
         db['button'][button_name]['to_view'] = to_view
 
-    @Storage._file_access(writeback=True)
+    @file_access(writeback=True)
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
