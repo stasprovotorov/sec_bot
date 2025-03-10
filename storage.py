@@ -4,17 +4,14 @@ from functools import wraps
 from typing import Optional
 import exceptions
 
-
 def file_access(writeback=False) -> None:
     '''Decorator for opening and closing files in methods that work with them'''
 
     def decorator(func):
         @wraps(func)
-
         def wrapper(obj, *args, **kwargs):
             with shelve.open(obj.file_path, writeback=writeback) as db:
-                return func(obj, db, *args, **kwargs)
-            
+                return func(obj, db, *args, **kwargs)            
         return wrapper
     
     return decorator
