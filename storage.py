@@ -1,7 +1,7 @@
 import os
 import shelve
 from functools import wraps
-from typing import Optional
+from typing import Optional, KeysView
 import exceptions
 
 def file_access(writeback=False) -> None:
@@ -106,10 +106,12 @@ class StorageViews():
         
         raise exceptions.ViewNotFoundError(view_name)
 
-
     @file_access()
-    def get_all_view_names(self, db):
-        return db['view'].keys()
+    def get_view_names(self, db) -> Optional[KeysView]:
+        '''Get all view names in persistent storage or None'''
+
+        if view_names := db['view'].keys():
+            return view_names
 
     @file_access(writeback=True)
     def save(self, db, name, text, buttons, image=None):
@@ -207,7 +209,6 @@ class StorageButtons():
 if __name__ == '__main__':
     stg_content = StorageContent()
 
-    view = stg_content.views.get_view('Name')
+    view_names = stg_content.views.get_view_names()
 
-    print(view)
-
+    print(type(dict.keys))
