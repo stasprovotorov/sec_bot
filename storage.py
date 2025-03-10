@@ -100,8 +100,11 @@ class StorageViews():
     @file_access()
     def get_view(self, db, view_name: str) -> Optional[dict]:
         '''Get a dictionary with the names of content components by view name'''
+
+        if view := db['view'].get(view_name):
+            return view
         
-        return db['view'][view_name]
+        raise exceptions.ViewNotFoundError(view_name)
 
 
     @file_access()
@@ -204,7 +207,7 @@ class StorageButtons():
 if __name__ == '__main__':
     stg_content = StorageContent()
 
-    view = stg_content.views.get_view('VolcaKick')
+    view = stg_content.views.get_view('Name')
 
     print(view)
 
