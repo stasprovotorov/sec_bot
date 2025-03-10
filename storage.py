@@ -4,6 +4,7 @@ from functools import wraps
 from typing import Optional, KeysView
 import exceptions
 
+
 def file_access(writeback=False) -> None:
     '''Decorator for opening and closing files in methods that work with them'''
 
@@ -114,15 +115,34 @@ class StorageViews():
             return view_names
 
     @file_access(writeback=True)
-    def save(self, db, name, text, buttons, image=None):
-        db['view'].setdefault(name, {})
-        db['view'][name]['text'] = text
-        db['view'][name]['button'] = buttons
-        db['view'][name]['image'] = image
+    def create_view(
+        self, 
+        db, 
+        view_name: str, 
+        text_name: str, 
+        button_names: Optional[list[str]] = None, 
+        image_name: Optional[str] = None
+    ) -> None:
+        '''Save view in persistent storage'''
+
+        new_view = db['view'].setdefault(view_name, {})
+        if new_view:
+            raise exceptions.ViewAlreadyExistsError(view_name)
+        
+        new_view['text'] = text_name
+        if button_names:
+            new_view['button'] = button_names
+        if image_name:
+            new_view['image'] = image_name
 
     @file_access(writeback=True)
-    def delete(self, db, name):
-        del db['view'][name]
+    def delete_view(self, db, view_name: str) -> None:
+        '''Delete view from persistent storage'''
+
+        try:
+            db['view'].pop(view_name)
+        except KeyError:
+            raise exceptions.ViewNotFoundError(view_name)
 
 
 class StorageTexts():
@@ -204,11 +224,3 @@ class StorageButtons():
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
-
-
-if __name__ == '__main__':
-    stg_content = StorageContent()
-
-    view_names = stg_content.views.get_view_names()
-
-    print(type(dict.keys))

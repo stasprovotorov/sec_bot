@@ -40,4 +40,11 @@ class ViewNotFoundError(StorageViewsError):
         self.view_name = view_name
         self.error_message = f'View with name {view_name} is not found'
         super().__init__(self.error_message)
-        
+
+class ViewAlreadyExistsError(StorageViewsError):
+    '''Exception raised when a view with the given name already exists in persistent storage'''
+
+    def __init__(self, view_name: str) -> None:
+        self.view_name = view_name
+        self.error_message = f'View with name {view_name} already exists'
+        super().__init__(self.error_message)
