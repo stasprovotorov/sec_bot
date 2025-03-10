@@ -85,31 +85,24 @@ class StorageContent(StorageBase):
 
     def __init__(self) -> None:
         super().__init__()
-        self.views = StorageViews()
+        self.views = StorageViews(self.file_path)
         self.texts = StorageTexts()
         self.images = StorageImages()
         self.buttons = StorageButtons()
 
 
 class StorageViews():
+    '''Class for working with bot content component views in persistent storage'''
+
+    def __init__(self, file_path) -> None:
+        self.file_path = file_path
+
     @file_access()
-    def get(self, db, view_name):
-        view_content_map = db['view'][view_name]
-        view_data = {}
+    def get_view(self, db, view_name: str) -> Optional[dict]:
+        '''Get a dictionary with the names of content components by view name'''
+        
+        return db['view'][view_name]
 
-        for content_type, content_name in view_content_map.items():
-            if content_type == 'button':
-                view_data[content_type] = {
-                    button_name: db[content_type].get(button_name) for button_name in content_name
-                }
-            else:
-                view_data[content_type] = db[content_type].get(content_name)
-
-        for content_type in db:
-            if content_type != 'view' and content_type not in view_data:
-                view_data.setdefault(content_type, None)
-
-        return view_data
 
     @file_access()
     def get_all_view_names(self, db):
@@ -206,3 +199,12 @@ class StorageButtons():
     def delete(self, db, name):
         if name not in self.PROTECTED_BUTTONS:
             del db['button'][name]
+
+
+if __name__ == '__main__':
+    stg_content = StorageContent()
+
+    view = stg_content.views.get_view('VolcaKick')
+
+    print(view)
+
