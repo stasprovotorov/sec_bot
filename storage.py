@@ -233,8 +233,12 @@ class StorageImages:
     
 
     @file_access()
-    def get_all_image_names(self, db):
-        return db['image'].keys()
+    def get_image_names(self, db: shelve.Shelf) -> Optional[KeysView]:
+        '''Get all text names in persistent storage or None'''
+
+        if image_names := db['image'].keys():
+            return image_names
+        
 
     @file_access(writeback=True)
     def save(self, db, name, image):
