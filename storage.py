@@ -251,8 +251,13 @@ class StorageImages:
 
 
     @file_access(writeback=True)
-    def delete(self, db, name):
-        del db['image'][name]
+    def delete_image(self, db: shelve.Shelf, image_name: str) -> None:
+        '''Delete image from persistent storage by image name'''
+
+        try:
+            db['image'].pop(image_name)
+        except KeyError:
+            raise exceptions.ImageNameNotFoundError(image_name)
 
 
 class StorageButtons():
