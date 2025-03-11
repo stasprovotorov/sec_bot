@@ -99,7 +99,7 @@ class StorageViews():
         self.file_path = file_path
 
     @file_access()
-    def get_view(self, db, view_name: str) -> Optional[dict]:
+    def get_view_content(self, db, view_name: str) -> Optional[dict]:
         '''Get a dictionary with the names of content components by view name'''
 
         if view := db['view'].get(view_name):
