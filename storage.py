@@ -93,7 +93,7 @@ class StorageContent(StorageBase):
 
 
 class StorageViews():
-    '''Class for working with bot content component views in persistent storage'''
+    '''Component class for working with bot content component views in persistent storage'''
 
     def __init__(self, file_path) -> None:
         self.file_path = file_path
@@ -146,7 +146,7 @@ class StorageViews():
 
 
 class StorageTexts():
-    PROTECTED_TEXTS = ('welcome')
+    '''Component class for working with text components of bot content in persistent storage'''
 
     @file_access()
     def get(self, db, name, lang):
