@@ -241,8 +241,14 @@ class StorageImages:
         
 
     @file_access(writeback=True)
-    def save(self, db, name, image):
-        db['image'][name] = image
+    def save_image(self, db: shelve.Shelf, image_name: str, image: bytes) -> None:
+        '''Save image in persistent storage with specified image name'''
+
+        if db['image'].get(image_name):
+            raise exceptions.ImageNameAlreadyExistsError(image_name)
+
+        db['image'][image_name] = image
+
 
     @file_access(writeback=True)
     def delete(self, db, name):
