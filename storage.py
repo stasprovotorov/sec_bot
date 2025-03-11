@@ -1,7 +1,7 @@
 import os
 import shelve
 from functools import wraps
-from typing import Optional, KeysView
+from typing import Optional, KeysView, Union
 import exceptions
 
 
@@ -87,15 +87,15 @@ class StorageContent(StorageBase):
     def __init__(self) -> None:
         super().__init__()
         self.views = StorageViews(self.file_path)
-        self.texts = StorageTexts()
+        self.texts = StorageTexts(self.file_path)
         self.images = StorageImages()
         self.buttons = StorageButtons()
 
 
-class StorageViews():
+class StorageViews:
     '''Component class for working with bot content component views in persistent storage'''
 
-    def __init__(self, file_path) -> None:
+    def __init__(self, file_path: str) -> None:
         self.file_path = file_path
 
     @file_access()
@@ -148,9 +148,18 @@ class StorageViews():
 class StorageTexts():
     '''Component class for working with text components of bot content in persistent storage'''
 
+    def __init__(self, file_path: str) -> None:
+        self.file_path = file_path
+
     @file_access()
-    def get(self, db, name, lang):
-        return db['text'][name][lang]
+    def get_text(self, db, text_name: str, text_language: str = None) -> Union[str, dict]:
+        if text_data := db['text'].get(text_name):
+            if text_language:
+                if text_value := text_data.get(text_language):
+                    return text_value                
+                raise exceptions.TextLanguageNotFoundError(text_name, text_language)            
+            return text_data        
+        raise exceptions.TextNameNotFoundError(text_name)
 
     @file_access()
     def get_all_text_names(self, db):
