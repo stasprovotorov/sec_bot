@@ -76,7 +76,7 @@ class ImageNameNotFoundError(StorageTextsError):
         super().__init__(f'Image with name {image_name} is not found')
 
 
-class ImagetNameAlreadyExistsError(StorageTextsError):
+class ImageNameAlreadyExistsError(StorageTextsError):
     '''Exception raised when a image with the given name already exists in persistent storage'''
     def __init__(self, image_name: str) -> None:
         super().__init__(f'Image with name {image_name} already exists')
