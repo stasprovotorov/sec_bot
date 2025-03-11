@@ -51,3 +51,9 @@ class TextLanguageNotFoundError(StorageTextsError):
     '''Exception raised when a text language is not found in persistent storage'''
     def __init__(self, text_name, text_language):
         super().__init__(f'Text language {text_language} for text name {text_name} is not found')
+
+
+class TextLanguageNotSpecifiedError(StorageTextsError):
+    '''Exception raised when any text language is not specified in the function call'''
+    def __init__(self):
+        super().__init__(f'At least one of the text languages must be specified')
