@@ -153,6 +153,8 @@ class StorageTexts():
 
     @file_access()
     def get_text(self, db, text_name: str, text_language: str = None) -> Union[str, dict]:
+        '''Get text value with specific language or all text data by text name'''
+
         if text_data := db['text'].get(text_name):
             if text_language:
                 if text_value := text_data.get(text_language):
@@ -162,8 +164,11 @@ class StorageTexts():
         raise exceptions.TextNameNotFoundError(text_name)
 
     @file_access()
-    def get_all_text_names(self, db):
-        return db['text'].keys()
+    def get_text_names(self, db) -> Optional[KeysView]:
+        '''Get all text names in persistent storage or None'''
+
+        if text_names := db['text'].keys():
+            return text_names
 
     @file_access(writeback=True)
     def save(self, db, name, text_ru=None, text_en=None):
