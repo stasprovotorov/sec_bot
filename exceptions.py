@@ -41,8 +41,13 @@ class StorageTextsError(StorageError):
     pass
 
 
-class TextNotFoundError(StorageTextsError):
+class TextNameNotFoundError(StorageTextsError):
     '''Exception raised when a text name is not found in persistent storage'''
     def __init__(self, text_name):
-        super().__init__(f'View with name {text_name} is not found')
-        
+        super().__init__(f'Text with name {text_name} is not found')
+
+
+class TextLanguageNotFoundError(StorageTextsError):
+    '''Exception raised when a text language is not found in persistent storage'''
+    def __init__(self, text_name, text_language):
+        super().__init__(f'Text language {text_language} for text name {text_name} is not found')
