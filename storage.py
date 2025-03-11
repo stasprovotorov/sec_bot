@@ -223,9 +223,15 @@ class StorageImages:
 
 
     @file_access()
-    def get(self, db, name):
-        return db['image'][name]
+    def get_image(self, db: shelve.Shelf, image_name: str) -> bytes:
+        '''Get image in bytes from persistent storage by image name'''
+
+        if image := db['image'].get(image_name):
+            return image
+
+        raise exceptions.ImageNameNotFoundError(image_name)
     
+
     @file_access()
     def get_all_image_names(self, db):
         return db['image'].keys()
