@@ -194,9 +194,13 @@ class StorageTexts():
             text_data['en'] = text_value_en
 
     @file_access(writeback=True)
-    def delete(self, db, name):
-        if name not in self.PROTECTED_TEXTS:
-            del db['text'][name]
+    def delete_text(self, db, text_name: str) -> None:
+        '''Delete text from persistent storage by text name'''
+        
+        try:
+            db['text'].pop(text_name)
+        except KeyError:
+            raise exceptions.TextNameNotFoundError(text_name)
 
 
 class StorageImages():
