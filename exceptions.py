@@ -43,13 +43,13 @@ class StorageTextsError(StorageError):
 
 class TextNameNotFoundError(StorageTextsError):
     '''Exception raised when a text name is not found in persistent storage'''
-    def __init__(self, text_name):
+    def __init__(self, text_name: str) -> None:
         super().__init__(f'Text with name {text_name} is not found')
 
 
 class TextLanguageNotFoundError(StorageTextsError):
     '''Exception raised when a text language is not found in persistent storage'''
-    def __init__(self, text_name, text_language):
+    def __init__(self, text_name: str, text_language: str) -> None:
         super().__init__(f'Text language {text_language} for text name {text_name} is not found')
 
 
