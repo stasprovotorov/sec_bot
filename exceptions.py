@@ -57,3 +57,9 @@ class TextLanguageNotSpecifiedError(StorageTextsError):
     '''Exception raised when any text language is not specified in the function call'''
     def __init__(self):
         super().__init__(f'At least one of the text languages must be specified')
+
+
+class TextNameAlreadyExistsError(StorageTextsError):
+    '''Exception raised when a text with the given name already exists in persistent storage'''
+    def __init__(self, text_name: str) -> None:
+        super().__init__(f'Text with name {text_name} already exists')
