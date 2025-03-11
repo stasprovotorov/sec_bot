@@ -56,25 +56,25 @@ class StorageUsers(StorageBase):
     default_file_structure = {'users': {}, 'admins': set()}
 
     @file_access()
-    def get_user(self, db, user_id: int) -> Optional[dict]:
+    def get_user(self, db: shelve.Shelf, user_id: int) -> Optional[dict]:
         return db['users'].get(user_id)
 
     @file_access(writeback=True)
-    def save_user(self, db, user_id: int, user_language: str, user_role: str) -> None:
+    def save_user(self, db: shelve.Shelf, user_id: int, user_language: str, user_role: str) -> None:
         if db['users'].get(user_id):
             raise exceptions.UserAlreadyExistsError(user_id)
         
         db['users'][user_id] = {'user_language': user_language, 'user_role': user_role}
 
     @file_access(writeback=True)
-    def delete_user(self, db, user_id: int) -> None:
+    def delete_user(self, db: shelve.Shelf, user_id: int) -> None:
         if user_id not in db['users']:
             raise exceptions.UserNotFoundError(user_id)
         
         db['users'].pop(user_id)
 
     @file_access()
-    def is_user_admin(self, db, user_id: int) -> bool:
+    def is_user_admin(self, db: shelve.Shelf, user_id: int) -> bool:
         return user_id in db['admins']
 
 
@@ -99,7 +99,7 @@ class StorageViews:
         self.file_path = file_path
 
     @file_access()
-    def get_view_content(self, db, view_name: str) -> Optional[dict]:
+    def get_view_content(self, db: shelve.Shelf, view_name: str) -> Optional[dict]:
         '''Get a dictionary with the names of content components by view name'''
 
         if view := db['view'].get(view_name):
@@ -108,7 +108,7 @@ class StorageViews:
         raise exceptions.ViewNotFoundError(view_name)
 
     @file_access()
-    def get_view_names(self, db) -> Optional[KeysView]:
+    def get_view_names(self, db: shelve.Shelf) -> Optional[KeysView]:
         '''Get all view names in persistent storage or None'''
 
         if view_names := db['view'].keys():
@@ -117,7 +117,7 @@ class StorageViews:
     @file_access(writeback=True)
     def create_view(
         self, 
-        db, 
+        db: shelve.Shelf, 
         view_name: str, 
         text_name: str, 
         button_names: Optional[list[str]] = None, 
@@ -136,7 +136,7 @@ class StorageViews:
             new_view['image'] = image_name
 
     @file_access(writeback=True)
-    def delete_view(self, db, view_name: str) -> None:
+    def delete_view(self, db: shelve.Shelf, view_name: str) -> None:
         '''Delete view from persistent storage'''
 
         try:
@@ -152,7 +152,7 @@ class StorageTexts():
         self.file_path = file_path
 
     @file_access()
-    def get_text(self, db, text_name: str, text_language: str = None) -> Union[str, dict]:
+    def get_text(self, db: shelve.Shelf, text_name: str, text_language: str = None) -> Union[str, dict]:
         '''Get text value with specific language or all text data by text name'''
 
         if text_data := db['text'].get(text_name):
@@ -164,7 +164,7 @@ class StorageTexts():
         raise exceptions.TextNameNotFoundError(text_name)
 
     @file_access()
-    def get_text_names(self, db) -> Optional[KeysView]:
+    def get_text_names(self, db: shelve.Shelf) -> Optional[KeysView]:
         '''Get all text names in persistent storage or None'''
 
         if text_names := db['text'].keys():
@@ -173,7 +173,7 @@ class StorageTexts():
     @file_access(writeback=True)
     def create_text(
         self, 
-        db, 
+        db: shelve.Shelf, 
         text_name: str, 
         text_value_ru: str = None, 
         text_value_en: str = None
@@ -194,7 +194,7 @@ class StorageTexts():
             text_data['en'] = text_value_en
 
     @file_access(writeback=True)
-    def delete_text(self, db, text_name: str) -> None:
+    def delete_text(self, db: shelve.Shelf, text_name: str) -> None:
         '''Delete text from persistent storage by text name'''
         
         try:
