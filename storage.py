@@ -171,16 +171,27 @@ class StorageTexts():
             return text_names
 
     @file_access(writeback=True)
-    def save(self, db, name, text_ru=None, text_en=None):
-        db['text'].setdefault(name, {})
+    def create_text(
+        self, 
+        db, 
+        text_name: str, 
+        text_value_ru: str = None, 
+        text_value_en: str = None
+    ) -> None:
+        '''Create a new text component for bot content'''
 
-        if text_ru and text_en:
-            db['text'][name]['ru'] = text_ru
-            db['text'][name]['en'] = text_en
-        elif text_ru:
-            db['text'][name]['ru'] = text_ru
-        elif text_en:
-            db['text'][name]['en'] = text_en
+        if db['text'].get(text_name):
+            raise exceptions.TextNameAlreadyExistsError(text_name)
+
+        if not text_value_ru and not text_value_en:
+            raise exceptions.TextLanguageNotSpecifiedError()
+
+        text_data = db['text'].setdefault(text_name, {})
+
+        if text_value_ru:
+            text_data['ru'] = text_value_ru
+        if text_value_en:
+            text_data['en'] = text_value_en
 
     @file_access(writeback=True)
     def delete(self, db, name):
