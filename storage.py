@@ -92,7 +92,7 @@ class StorageContent(StorageBase):
         super().__init__()
         self.views = StorageViews(self.file_path)
         self.texts = StorageTexts(self.file_path)
-        self.images = StorageImages()
+        self.images = StorageImages(self.file_path)
         self.buttons = StorageButtons()
 
 
@@ -153,7 +153,7 @@ class StorageViews:
             raise exceptions.ViewNotFoundError(view_name)
 
 
-class StorageTexts():
+class StorageTexts:
     '''Component class for working with text components of bot content in persistent storage'''
 
     def __init__(self, file_path: str) -> None:
@@ -215,7 +215,13 @@ class StorageTexts():
             raise exceptions.TextNameNotFoundError(text_name)
 
 
-class StorageImages():
+class StorageImages:
+    '''Component class for working with image components of bot content in persistent storage'''
+
+    def __init__(self, file_path: str) -> None:
+        self.file_path = file_path
+
+
     @file_access()
     def get(self, db, name):
         return db['image'][name]
