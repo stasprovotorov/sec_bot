@@ -63,3 +63,14 @@ class TextNameAlreadyExistsError(StorageTextsError):
     '''Exception raised when a text with the given name already exists in persistent storage'''
     def __init__(self, text_name: str) -> None:
         super().__init__(f'Text with name {text_name} already exists')
+
+
+class StorageImagesError(StorageError):
+    '''The parent class for all exceptions related to images storage'''
+    pass
+
+
+class ImageNameNotFoundError(StorageTextsError):
+    '''Exception raised when a image name is not found in persistent storage'''
+    def __init__(self, image_name):
+        super().__init__(f'Image with name {image_name} is not found')
