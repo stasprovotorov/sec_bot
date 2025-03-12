@@ -90,4 +90,4 @@ class StorageButtonsError(StorageError):
 class ButtonNameNotFoundError(StorageButtonsError):
     '''Exception raised when a button name is not found in persistent storage'''
     def __init__(self, button_name: str) -> None:
-        super().__init__(f'Image with name {button_name} is not found')
+        super().__init__(f'Button with name {button_name} is not found')
