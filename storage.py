@@ -93,7 +93,7 @@ class StorageContent(StorageBase):
         self.views = StorageViews(self.file_path)
         self.texts = StorageTexts(self.file_path)
         self.images = StorageImages(self.file_path)
-        self.buttons = StorageButtons()
+        self.buttons = StorageButtons(self.file_path)
 
 
 class StorageViews:
@@ -260,14 +260,33 @@ class StorageImages:
             raise exceptions.ImageNameNotFoundError(image_name)
 
 
-class StorageButtons():
-    PROTECTED_BUTTONS = ('editor', 'menu')
+class StorageButtons:
+    '''Component class for working with button components of bot content in persistent storage'''
+
+    def __init__(self, file_path: str) -> None:
+        self.file_path = file_path
+
 
     @file_access()
-    def get(self, db, name, lang):
-        label = db['button'][name]['label'][lang]
-        to_view = db['button'][name]['to_view']
-        return label, to_view
+    def get_button_data(self, db: shelve.Shelf, button_name: str, label_language: str = None) -> Union[tuple, dict]:
+        '''Get all button data by button name or label with callback data by button name and label language'''
+
+        button_data = db['button'].get(button_name)
+
+        if not button_data:
+            raise exceptions.ButtonNameNotFoundError(button_name)
+
+        if label_language:
+            button_label = button_data['label'].get(label_language)
+            if not button_label:
+                raise exceptions.ButtonLabelLanguageNotFoundError(label_language, button_name)
+            
+            button_callback_data = button_data['callback_data']
+
+            return button_label, button_callback_data
+        
+        return button_data
+
     
     @file_access()
     def get_all_button_names(self, db):
