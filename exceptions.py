@@ -3,6 +3,12 @@ class StorageError(Exception):
     pass
 
 
+class LanguageNotSpecifiedError(StorageError):
+    '''Exception raised when any language of content component is not specified in the function call'''
+    def __init__(self):
+        super().__init__(f'At least one of the languages of content component must be specified')
+
+
 class StorageUsersError(StorageError):
     '''The parent class for all exceptions related to users storage'''
     pass
@@ -51,12 +57,6 @@ class TextLanguageNotFoundError(StorageTextsError):
     '''Exception raised when a text language is not found in persistent storage'''
     def __init__(self, text_name: str, text_language: str) -> None:
         super().__init__(f'Text language {text_language} for text name {text_name} is not found')
-
-
-class TextLanguageNotSpecifiedError(StorageTextsError):
-    '''Exception raised when any text language is not specified in the function call'''
-    def __init__(self):
-        super().__init__(f'At least one of the text languages must be specified')
 
 
 class TextNameAlreadyExistsError(StorageTextsError):
