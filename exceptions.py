@@ -92,8 +92,7 @@ class ButtonNameNotFoundError(StorageButtonsError):
     def __init__(self, button_name: str) -> None:
         super().__init__(f'Button with name {button_name} is not found')
 
-class ButtonLanguageNotFoundError(StorageButtonsError):
-    '''Exception raised when specified button language is not found in persistent storage'''
-    def __init__(self, button_language: str) -> None:
-        super().__init__(f'Specified button language {button_language} is not found')
-        
+class ButtonLabelLanguageNotFoundError(StorageButtonsError):
+    '''Exception raised when the specified label language of the button is not found in persistent storage'''
+    def __init__(self, button_language: str, button_name: str) -> None:
+        super().__init__(f'Specified label language {button_language} of the button {button_name} is not found')
