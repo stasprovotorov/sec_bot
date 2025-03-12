@@ -289,7 +289,7 @@ class StorageButtons:
 
     
     @file_access()
-    def get_button_names(self, db: shelve.Shelf) -> Optional[KeysView]:
+    def get_button_names(self, db: shelve.Shelf) -> Optional[KeysView[str]]:
         '''Get all button names in persistent storage or None'''
 
         if button_names := db['button'].keys():
@@ -325,8 +325,18 @@ class StorageButtons:
 
 
     @file_access(writeback=True)
-    def save_label(self, db, button_name, label_lang, label):
-        db['button'][button_name]['label'][label_lang] = label
+    def edit_button_label(self, db: shelve.Shelf, button_name: str, label_language: str, new_label: str) -> None:
+        '''Edit button label value by button name and label language'''
+
+        button_data = db['button'].get(button_name)
+        if not button_data:
+            raise exceptions.ButtonNameNotFoundError(button_name)
+        
+        if label_language not in button_data['label']:
+            raise exceptions.ButtonLabelLanguageNotFoundError(label_language, button_name)
+        
+        button_data['label'][label_language] = new_label
+
 
     @file_access(writeback=True)
     def save_view(self, db, button_name, to_view):
