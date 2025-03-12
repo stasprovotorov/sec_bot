@@ -195,7 +195,7 @@ class StorageTexts:
             raise exceptions.TextNameAlreadyExistsError(text_name)
 
         if not text_value_ru and not text_value_en:
-            raise exceptions.TextLanguageNotSpecifiedError()
+            raise exceptions.LanguageNotSpecifiedError()
 
         text_data = db['text'].setdefault(text_name, {})
 
@@ -297,11 +297,32 @@ class StorageButtons:
 
 
     @file_access(writeback=True)
-    def save(self, db, name, label_ru, label_en, to_view):
-        db['button'][name] = {
-            'label': {'ru': label_ru, 'en': label_en},
-            'to_view': to_view
-        }
+    def create_button(
+        self, 
+        db: shelve.Shelf, 
+        button_name: str,
+        callback_data: str,
+        button_label_ru: str = None, 
+        button_label_en: str = None
+    ) -> None:
+        '''Create a new button component for bot content'''
+
+        if db['button'].get(button_name):
+            raise exceptions.ButtonNameAlreadyExistsError(button_name)
+
+        if not button_label_ru and not button_label_en:
+            raise exceptions.LanguageNotSpecifiedError()
+
+        button_data = db['button'].setdefault(button_name, {})
+
+        button_label = button_data.setdefault('label', {})
+        if button_label_ru:
+            button_label['ru'] = button_label_ru
+        if button_label_en:
+            button_label['en'] = button_label_en
+
+        button_data['callback_data'] = callback_data
+
 
     @file_access(writeback=True)
     def save_label(self, db, button_name, label_lang, label):
