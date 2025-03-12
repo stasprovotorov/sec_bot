@@ -80,3 +80,14 @@ class ImageNameAlreadyExistsError(StorageTextsError):
     '''Exception raised when a image with the given name already exists in persistent storage'''
     def __init__(self, image_name: str) -> None:
         super().__init__(f'Image with name {image_name} already exists')
+
+
+class StorageButtonsError(StorageError):
+    '''The parent class for all exceptions related to buttons storage'''
+    pass
+
+
+class ButtonNameNotFoundError(StorageButtonsError):
+    '''Exception raised when a button name is not found in persistent storage'''
+    def __init__(self, button_name: str) -> None:
+        super().__init__(f'Image with name {button_name} is not found')
