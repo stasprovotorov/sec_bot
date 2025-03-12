@@ -289,8 +289,12 @@ class StorageButtons:
 
     
     @file_access()
-    def get_all_button_names(self, db):
-        return list(db['button'].keys())
+    def get_button_names(self, db: shelve.Shelf) -> Optional[KeysView]:
+        '''Get all button names in persistent storage or None'''
+
+        if button_names := db['button'].keys():
+            return button_names
+
 
     @file_access(writeback=True)
     def save(self, db, name, label_ru, label_en, to_view):
