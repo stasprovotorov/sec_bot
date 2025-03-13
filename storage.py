@@ -59,7 +59,7 @@ class StorageUsers(StorageBase):
     @file_access()
     def get_user(self, db: shelve.Shelf, user_id: int) -> Optional[dict]:
         '''Get user data by user ID from persistent storage'''
-        
+
         if user_id not in db['users']:
             raise exceptions.UserNotFoundError(user_id)
         
@@ -68,6 +68,8 @@ class StorageUsers(StorageBase):
 
     @file_access(writeback=True)
     def save_user(self, db: shelve.Shelf, user_id: int, user_language: str, user_role: str) -> None:
+        '''Save user data into persistent storage'''
+        
         if db['users'].get(user_id):
             raise exceptions.UserAlreadyExistsError(user_id)
         
