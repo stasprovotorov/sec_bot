@@ -340,7 +340,7 @@ class StorageButtons:
 
     @file_access(writeback=True)
     def edit_button_callback_data(self, db: shelve.Shelf, button_name: str, callback_data: str) -> None:
-        '''Edit button callback data value by button name'''
+        '''Edit button callback data value by button name in persistent storage '''
 
         button_data = db['button'].get(button_name)
         if not button_data:
@@ -350,6 +350,10 @@ class StorageButtons:
 
 
     @file_access(writeback=True)
-    def delete(self, db, name):
-        if name not in self.PROTECTED_BUTTONS:
-            del db['button'][name]
+    def delete_button(self, db: shelve.Shelf, button_name: str) -> None:
+        '''Delete button data from persistent storage'''
+
+        try:
+            db['button'].pop(button_name)
+        except KeyError:
+            raise exceptions.ButtonNameNotFoundError(button_name)
