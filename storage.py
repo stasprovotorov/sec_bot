@@ -339,8 +339,15 @@ class StorageButtons:
 
 
     @file_access(writeback=True)
-    def save_view(self, db, button_name, to_view):
-        db['button'][button_name]['to_view'] = to_view
+    def edit_button_callback_data(self, db: shelve.Shelf, button_name: str, callback_data: str) -> None:
+        '''Edit button callback data value by button name'''
+
+        button_data = db['button'].get(button_name)
+        if not button_data:
+            raise exceptions.ButtonNameNotFoundError(button_name)
+                
+        db['button'][button_name]['callback_data'] = callback_data
+
 
     @file_access(writeback=True)
     def delete(self, db, name):
