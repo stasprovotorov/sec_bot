@@ -88,6 +88,8 @@ class StorageUsers(StorageBase):
 
     @file_access()
     def is_user_admin(self, db: shelve.Shelf, user_id: int) -> bool:
+        '''Check if the user is an administrator or not'''
+
         return user_id in db['admins']
 
 
