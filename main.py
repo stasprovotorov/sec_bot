@@ -16,9 +16,9 @@ TELEGRAM_BOT_TOKEN = config['TELEGRAM_BOT_TOKEN']
 state_storage = StateMemoryStorage()
 bot = TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
 
+# Initialize the storage objects for the bot
 stg_users = StorageUsers()
 stg_content = StorageContent()
-stg_content.lazy_init()
 
 vw = View(bot, stg_content)
 
