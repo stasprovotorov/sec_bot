@@ -3,8 +3,9 @@ This module contains utility functions for building and sending messages
 using the TeleBot library and the StorageContent class instance.
 '''
 
-from telebot import types
+from telebot import types, TeleBot
 from storage import StorageContent
+
 
 def build_message(stg_content: StorageContent, message_key: str, message_language: str) -> dict:
     '''Build a message from content components in persistent storage into a dictionary'''
@@ -30,3 +31,12 @@ def build_message(stg_content: StorageContent, message_key: str, message_languag
             message_data[component_type] = keyboard
 
     return message_data
+
+
+def send_message(bot: TeleBot, message_data: dict) -> None:
+    '''Send a message including photo and buttons using the specified message data.'''
+    
+    if 'image' in message_data:
+        bot.send_photo(**message_data)
+    else:
+        bot.send_message(**message_data)
