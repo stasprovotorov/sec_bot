@@ -7,18 +7,20 @@ from telebot import types, TeleBot
 from storage import StorageContent
 
 
-def build_message(stg_content: StorageContent, message_key: str, message_language: str) -> dict:
-    '''Build a message from content components in persistent storage into a dictionary'''
+def build_message(stg_content: StorageContent, chat_id: int, message_key: str, message_language: str) -> dict:
+    '''Build a message from content components in persistent storage into a dictionary.'''
 
-    message_data = {}
+    message_data = {'chat_id': chat_id}
     message_content = stg_content.views.get_view_content(message_key)
     
     for component_type, component_name in message_content.items():
         if component_type == 'text':
-            message_data[component_type] = stg_content.texts.get_text(component_name, message_language)
+            text = stg_content.texts.get_text(component_name, message_language)
+            parameter_name = 'caption' if 'image' in message_content else 'text'
+            message_data[parameter_name] = text
 
         elif component_type == 'image':
-            message_data[component_type] = stg_content.images.get_image(component_name)
+            message_data['photo'] = stg_content.images.get_image(component_name)
 
         elif component_type == 'button':
             keyboard = types.InlineKeyboardMarkup()
@@ -28,15 +30,15 @@ def build_message(stg_content: StorageContent, message_key: str, message_languag
                 button_label, button_callback_data = button_data
                 keyboard.add(types.InlineKeyboardButton(button_label, callback_data=button_callback_data))
                 
-            message_data[component_type] = keyboard
+            message_data['reply_markup'] = keyboard
 
     return message_data
 
 
 def send_message(bot: TeleBot, message_data: dict) -> None:
     '''Send a message including photo and buttons using the specified message data.'''
-    
-    if 'image' in message_data:
+
+    if 'photo' in message_data:
         bot.send_photo(**message_data)
     else:
         bot.send_message(**message_data)
