@@ -4,7 +4,6 @@ from telebot.storage import StateMemoryStorage
 from storage import StorageUsers, StorageContent
 from user import User
 from telebot import TeleBot, types
-from view import View
 from editor import Editor, StatesViewEdit
 from editor_data import editor_msg, editor_btn, state_group_to_content_type
 
@@ -19,8 +18,6 @@ bot = TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
 # Initialize the storage objects for the bot
 stg_users = StorageUsers()
 stg_content = StorageContent()
-
-vw = View(bot, stg_content)
 
 editor = Editor(stg_content)
 
