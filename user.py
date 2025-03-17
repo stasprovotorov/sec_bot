@@ -1,20 +1,21 @@
+from storage import StorageUsers
+import exceptions
+
+
 class User:
-    def __init__(self, stg_users, id, lang):
-        if user_data := stg_users.get_user(id):
-            self.id = id
-            for attr, value in user_data.items():
-                if attr == 'role':
-                    value = self._determine_role(stg_users)
-                setattr(self, attr, value)
-        else:
-            self.id = id
-            self.lang = lang
-            self.role = self._determine_role(stg_users)
-            stg_users.save_user(self.id, self.lang, self.role)
+    '''
+    A class to represent a user.
 
-        if self.role == 'admin':
-            self.state = None
+    Upon initialization, it creates a new user with the specified data or uses data from persistent 
+    storage if the user ID is found.
+    '''
 
-    def _determine_role(self, stg_users):
-        return 'admin' if self.id in stg_users.get_admins() else 'basic'
-    
+    def __init__(self, stg_users: StorageUsers, user_id: int, user_language: str) -> None:
+        self.user_id = user_id
+
+        try:
+            user_data = stg_users.get_user(user_id)
+            self.user_language = user_data.get('user_language', user_language)
+
+        except exceptions.UserNotFoundError:
+            self.user_language = user_language
