@@ -1,7 +1,8 @@
 from dotenv import dotenv_values
 from telebot.storage import StateMemoryStorage
-
 from storage import StorageUsers, StorageContent
+from message_utils import build_message, send_message
+
 from user import User
 from telebot import TeleBot, types
 from editor import Editor, StatesViewEdit
