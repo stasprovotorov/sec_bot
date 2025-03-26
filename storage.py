@@ -97,7 +97,7 @@ class StorageContent(StorageBase):
     '''Composite class for bot content component classes'''
 
     file_name = 'data_content'
-    default_file_structure = {'view': {}, 'text': {}, 'image': {}, 'button': {}}
+    default_file_structure = {'message_content': {}, 'text': {}, 'image': {}, 'button': {}}
 
     def __init__(self) -> None:
         super().__init__()
@@ -115,53 +115,53 @@ class StorageMessageContent:
 
 
     @file_access()
-    def get_view_content(self, db: shelve.Shelf, view_name: str) -> Optional[dict]:
-        '''Get a dictionary with the names of content components by view name'''
+    def get_message_content(self, db: shelve.Shelf, message_content_name: str) -> Optional[dict]:
+        '''Get a dictionary with the names of content components by message content name'''
 
-        if view := db['view'].get(view_name):
-            return view
+        if message_content := db['message_content'].get(message_content_name):
+            return message_content
         
-        raise exceptions.ViewNotFoundError(view_name)
+        raise exceptions.ViewNotFoundError(message_content_name)
 
 
     @file_access()
-    def get_view_names(self, db: shelve.Shelf) -> Optional[KeysView]:
-        '''Get all view names in persistent storage or None'''
+    def get_message_content_names(self, db: shelve.Shelf) -> Optional[KeysView]:
+        '''Get all message content names in persistent storage or None'''
 
-        if view_names := db['view'].keys():
-            return view_names
+        if message_content_names := db['message_content'].keys():
+            return message_content_names
 
 
     @file_access(writeback=True)
-    def create_view(
+    def create_message_content(
         self, 
         db: shelve.Shelf, 
-        view_name: str, 
+        message_content_name: str, 
         text_name: str, 
         button_names: Optional[list[str]] = None, 
         image_name: Optional[str] = None
     ) -> None:
-        '''Save view in persistent storage'''
+        '''Save message content in persistent storage'''
 
-        new_view = db['view'].setdefault(view_name, {})
-        if new_view:
-            raise exceptions.ViewAlreadyExistsError(view_name)
+        new_message_content = db['message_content'].setdefault(message_content_name, {})
+        if new_message_content:
+            raise exceptions.ViewAlreadyExistsError(message_content_name)
         
-        new_view['text'] = text_name
+        new_message_content['text'] = text_name
         if button_names:
-            new_view['button'] = button_names
+            new_message_content['button'] = button_names
         if image_name:
-            new_view['image'] = image_name
+            new_message_content['image'] = image_name
 
 
     @file_access(writeback=True)
-    def delete_view(self, db: shelve.Shelf, view_name: str) -> None:
-        '''Delete view from persistent storage'''
+    def delete_message_content(self, db: shelve.Shelf, message_content_name: str) -> None:
+        '''Delete message content from persistent storage'''
 
         try:
-            db['view'].pop(view_name)
+            db['message_content'].pop(message_content_name)
         except KeyError:
-            raise exceptions.ViewNotFoundError(view_name)
+            raise exceptions.ViewNotFoundError(message_content_name)
 
 
 class StorageTexts:
