@@ -11,7 +11,7 @@ def build_message(stg_content: StorageContent, chat_id: int, message_key: str, m
     '''Build a message from content components in persistent storage into a dictionary.'''
 
     message_data = {'chat_id': chat_id}
-    message_content = stg_content.views.get_view_content(message_key)
+    message_content = stg_content.message_content.get_view_content(message_key)
     
     for component_type, component_name in message_content.items():
         if component_type == 'text':
