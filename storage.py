@@ -101,13 +101,13 @@ class StorageContent(StorageBase):
 
     def __init__(self) -> None:
         super().__init__()
-        self.views = StorageViews(self.file_path)
+        self.views = StorageMessageContent(self.file_path)
         self.texts = StorageTexts(self.file_path)
         self.images = StorageImages(self.file_path)
         self.buttons = StorageButtons(self.file_path)
 
 
-class StorageViews:
+class StorageMessageContent:
     '''Component class for working with bot content component views in persistent storage'''
 
     def __init__(self, file_path: str) -> None:
