@@ -102,9 +102,9 @@ class StorageContent(StorageBase):
     def __init__(self) -> None:
         super().__init__()
         self.message_content = StorageMessageContent(self.file_path)
-        self.texts = StorageTexts(self.file_path)
-        self.images = StorageImages(self.file_path)
-        self.buttons = StorageButtons(self.file_path)
+        self.text = StorageTexts(self.file_path)
+        self.image = StorageImages(self.file_path)
+        self.button = StorageButtons(self.file_path)
 
 
 class StorageMessageContent:

@@ -15,18 +15,18 @@ def build_message(stg_content: StorageContent, chat_id: int, message_key: str, m
     
     for component_type, component_name in message_content.items():
         if component_type == 'text':
-            text = stg_content.texts.get_text(component_name, message_language)
+            text = stg_content.text.get_text(component_name, message_language)
             parameter_name = 'caption' if 'image' in message_content else 'text'
             message_data[parameter_name] = text
 
         elif component_type == 'image':
-            message_data['photo'] = stg_content.images.get_image(component_name)
+            message_data['photo'] = stg_content.image.get_image(component_name)
 
         elif component_type == 'button':
             keyboard = types.InlineKeyboardMarkup()
 
             for button_name in component_name:
-                button_data = stg_content.buttons.get_button_data(button_name, message_language)
+                button_data = stg_content.button.get_button_data(button_name, message_language)
                 button_label, button_callback_data = button_data
                 keyboard.add(types.InlineKeyboardButton(button_label, callback_data=button_callback_data))
                 
