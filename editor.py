@@ -33,7 +33,7 @@ class StatesEditorButtonEditLabel(StatesGroup):
     choose_button_label_language = State()
     enter_button_label = State()
 
-class StatesEditorButtonEditMessage(StatesGroup):
+class StatesEditorButtonEditMessageCall(StatesGroup):
     choose_button_name = State()
     enter_button_message = State()
 
