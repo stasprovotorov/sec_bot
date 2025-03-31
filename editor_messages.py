@@ -3,27 +3,31 @@ This is a module for retrieving text that is sent in a dialogue with the user wh
 '''
 
 
-def get_message(callback_data: str, message_language: str) -> str:
-    '''A function to get a message from callback_messages using callback_data.'''
+def get_message(user_action: str, message_language: str) -> str:
+    '''A function to get a message from callback_messages using callback_data or state name.'''
 
-    _, *callback_keys = callback_data.split(':')
+    if user_action.startswith('editor'):
+        _, *message_keys = user_action.split(':')
+    elif user_action.startswith('States'):
+        message_keys = user_action.split(':')
+
     index = 0
 
-    def recursion(callback_messages: dict, callback_key: str) -> str:
+    def recursion(editor_messages: dict, callback_key: str) -> str:
         nonlocal index
 
-        result = callback_messages[callback_key]
+        result = editor_messages[callback_key]
 
         try:
             return result[message_language]
         except KeyError:
             index += 1
-            return recursion(result, callback_keys[index])
+            return recursion(result, message_keys[index])
 
-    return recursion(CALLBACK_MESSAGES, callback_keys[0])
+    return recursion(EDITOR_MESSAGES, message_keys[0])
 
 
-CALLBACK_MESSAGES = {
+EDITOR_MESSAGES = {
     'menu': {
         'ru': None,
         'en': None
@@ -147,5 +151,27 @@ CALLBACK_MESSAGES = {
             'ru': None,
             'en': None
         }
+    },
+    'StatesEditorTextCreate': {
+        'enter_text_name': {
+            'ru': None,
+            'en': None
+        },
+        'enter_text_ru': {
+            'ru': None,
+            'en': None
+        },
+        'enter_text_en': {
+            'ru': None,
+            'en': None
+        }
     }
 }
+
+
+if __name__ == '__main__':
+    callback_data = 'editor:message:edit:button:add'
+    state = 'StatesEditorTextCreate:enter_text_ru'
+
+    message = get_message(callback_data, 'en')
+    print(message)
