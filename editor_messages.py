@@ -6,10 +6,8 @@ This is a module for retrieving text that is sent in a dialogue with the user wh
 def get_message(user_action: str, message_language: str) -> str:
     '''A function to get a message from callback_messages using callback_data or state name.'''
 
-    if user_action.startswith('editor'):
-        _, *message_keys = user_action.split(':')
-    elif user_action.startswith('States'):
-        message_keys = user_action.split(':')
+    message_keys = user_action.split(':')
+    message_keys = message_keys[1:] if message_keys[0] == 'editor' else message_keys
 
     index = 0
 
