@@ -19,7 +19,7 @@ class StatesEditorImageLoad(StatesGroup):
     enter_image_name = State()
     attach_image = State()
 
-class StatesEditorImageLoad(StatesGroup):
+class StatesEditorImageDelete(StatesGroup):
     choose_image_name = State()
 
 class StatesEditorButtonCreate(StatesGroup):
@@ -86,4 +86,3 @@ class StatesEditorRolesAssign(StatesGroup):
 class StatesEditorRolesRemove(StatesGroup):
     attach_contact = State()
     choose_role_current = State()
-    
