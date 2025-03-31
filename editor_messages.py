@@ -165,13 +165,215 @@ EDITOR_MESSAGES = {
             'ru': None,
             'en': None
         }
+    },
+    'StatesEditorTextEdit': {
+        'choose_text_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_text_language': {
+            'ru': None,
+            'en': None
+        },
+        'enter_text': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorTextDelete': {
+        'choose_text_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_text_language': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorImageLoad': {
+        'enter_image_name': {
+            'ru': None,
+            'en': None
+        },
+        'attach_image': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorImageLoad': {
+        'choose_image_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorButtonCreate': {
+        'enter_button_name': {
+            'ru': None,
+            'en': None
+        },
+        'enter_button_label_ru': {
+            'ru': None,
+            'en': None
+        },
+        'enter_button_label_en': {
+            'ru': None,
+            'en': None
+        },
+        'enter_button_message': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorButtonEditLabel': {
+        'choose_button_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_button_label_language': {
+            'ru': None,
+            'en': None
+        },
+        'enter_button_label': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorButtonEditMessage': {
+        'choose_button_name': {
+            'ru': None,
+            'en': None
+        },
+        'enter_button_message': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorButtonDelete': {
+        'choose_button_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageCreate': {
+        'enter_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_text_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_image_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_button_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditTextReplace': {
+        'enter_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_text_name_added': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditButtonAdd': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_button_name_added': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditButtonReplace': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_button_name_current': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_button_name_added': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditButtonDelete': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_button_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditImageAdd': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_image_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditImageReplace': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_image_name_current': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_image_name_added': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageEditImageDelete': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        },
+        'choose_message_image_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorMessageDelete': {
+        'choose_message_name': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorRolesAssign': {
+        'attach_contact': {
+            'ru': None,
+            'en': None
+        },
+        'choose_role_added': {
+            'ru': None,
+            'en': None
+        }
+    },
+    'StatesEditorRolesRemove': {
+        'attach_contact': {
+            'ru': None,
+            'en': None
+        },
+        'choose_role_current': {
+            'ru': None,
+            'en': None
+        }
     }
 }
-
-
-if __name__ == '__main__':
-    callback_data = 'editor:message:edit:button:add'
-    state = 'StatesEditorTextCreate:enter_text_ru'
-
-    message = get_message(callback_data, 'en')
-    print(message)
